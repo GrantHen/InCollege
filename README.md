@@ -1,2 +1,0 @@
-# InCollege
-Software Engineering Project
