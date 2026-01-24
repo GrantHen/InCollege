@@ -59,8 +59,15 @@
 
        01  PW-LEN                     PIC 99 VALUE 0. *> Password length (8-12)
 
-       01  CH                         PIC X. *> One character at a time
-       01  POS                        PIC 99 VALUE 1. *> Loop index for password scan
+       01  ONE-CHAR                   PIC X. *> One character at a time
+       01  PW-SCAN                        PIC 99 VALUE 1. *> Loop index for password scan
+       
+       *> Logged-in flag
+       01  LOGGED-IN                 PIC X VALUE "N".
+           88  IS-LOGGED-IN          VALUE "Y".
+           88  NOT-LOGGED-IN         VALUE "N".
+       01  POST-CHOICE               PIC 9 VALUE 0.
+       01  SKILL-CHOICE              PIC 9 VALUE 0.
 
        PROCEDURE DIVISION.
        MAIN.
@@ -79,7 +86,7 @@
 
                EVALUATE MENU-CHOICE
                    WHEN 1
-                       DISPLAY "Login is under construction (for now)."
+                       PERFORM LOGIN
                    WHEN 2
                        PERFORM CREATE-NEW-ACCOUNT
                    WHEN 9
@@ -159,27 +166,27 @@
            END-IF
 
            *> Scan each character in the password to find required types
-           PERFORM VARYING POS FROM 1 BY 1 UNTIL POS > PW-LEN
-               MOVE PASSWORD-IN(POS:1) TO CH
+           PERFORM VARYING PW-SCAN FROM 1 BY 1 UNTIL PW-SCAN > PW-LEN
+               MOVE PASSWORD-IN(PW-SCAN:1) TO ONE-CHAR
 
                *> Uppercase check: A-Z
-               IF CH >= "A" AND CH <= "Z"
+               IF ONE-CHAR >= "A" AND ONE-CHAR <= "Z"
                    SET UPPER-YES TO TRUE
                END-IF
 
                *> Digit check: 0-9
-               IF CH >= "0" AND CH <= "9"
+               IF ONE-CHAR >= "0" AND ONE-CHAR <= "9"
                    SET DIGIT-YES TO TRUE
                END-IF
 
                *> Special character check (simple, beginner-friendly list)
-               IF CH = "!" OR CH = "@" OR CH = "#" OR CH = "$" OR CH = "%" OR
-                  CH = "^" OR CH = "&" OR CH = "*" OR CH = "(" OR CH = ")" OR
-                  CH = "-" OR CH = "_" OR CH = "+" OR CH = "=" OR CH = "?" OR
-                  CH = "."
+               IF ONE-CHAR = "!" OR ONE-CHAR = "@" OR ONE-CHAR = "#" OR ONE-CHAR = "$" OR ONE-CHAR = "%" OR
+                  ONE-CHAR = "^" OR ONE-CHAR = "&" OR ONE-CHAR = "*" OR ONE-CHAR = "(" OR ONE-CHAR = ")" OR
+                  ONE-CHAR = "-" OR ONE-CHAR = "_" OR ONE-CHAR = "+" OR ONE-CHAR = "=" OR ONE-CHAR = "?" OR
+                  ONE-CHAR = "."
                    SET SPECIAL-YES TO TRUE
                END-IF
-           END-PERFORM
+           END-PERFORM.
 
            *> Only valid if we found all 3 requirements
            IF UPPER-YES AND DIGIT-YES AND SPECIAL-YES
@@ -222,3 +229,66 @@
                WRITE ACCOUNTS-REC
            END-PERFORM
            CLOSE ACCOUNTS-FILE.
+
+       LOGIN.
+           DISPLAY "Please enter your username: ".
+           ACCEPT USERNAME-IN.
+           DISPLAY "Please enter your password: ".
+           ACCEPT PASSWORD-IN.
+
+           DISPLAY "You have successfully logged in."
+           DISPLAY " "
+           DISPLAY "Welcome, " FUNCTION TRIM(USERNAME-IN) "!"
+           SET IS-LOGGED-IN TO TRUE
+
+           PERFORM POST-LOGIN-MENU.
+       
+       POST-LOGIN-MENU.
+           MOVE 0 TO POST-CHOICE
+           PERFORM UNTIL POST-CHOICE = 9
+               DISPLAY "1. Search for a job"
+               DISPLAY "2. Find someone you know"
+               DISPLAY "3. Learn a new skill"
+               DISPLAY "9. Main Menu"
+               DISPLAY "Enter your choice: "
+               ACCEPT POST-CHOICE
+
+               EVALUATE POST-CHOICE
+                   WHEN 1
+                       DISPLAY "Job search/internship is under construction."
+                       DISPLAY " "
+                   WHEN 2
+                       DISPLAY "Find someone you know is under construction."
+                       DISPLAY " "
+                   WHEN 3
+                       PERFORM LEARN-NEW-SKILL
+                   WHEN 9
+                       EXIT PERFORM
+                   WHEN OTHER
+                       DISPLAY "Invalid choice. Try again."
+                       DISPLAY " "
+               END-EVALUATE
+           END-PERFORM.
+
+       LEARN-NEW-SKILL.
+           MOVE 0 TO SKILL-CHOICE
+           PERFORM UNTIL SKILL-CHOICE = 6
+               DISPLAY "Learn a New Skill:"
+               DISPLAY "1. Skill 1"
+               DISPLAY "2. Skill 2"
+               DISPLAY "3. Skill 3"
+               DISPLAY "4. Skill 4"
+               DISPLAY "5. Skill 5"
+               DISPLAY "6. Go Back"
+               DISPLAY "Enter your choice: "
+               ACCEPT SKILL-CHOICE
+
+               EVALUATE SKILL-CHOICE
+                   WHEN 1 THRU 5
+                       DISPLAY "This skill is under construction."
+                   WHEN 6
+                       CONTINUE
+                   WHEN OTHER
+                       DISPLAY "Invalid choice. Try again."
+               END-EVALUATE
+           END-PERFORM.
