@@ -1,0 +1,15 @@
+{
+  "name": "InCollege COBOL",
+  "build": {
+    "dockerfile": "../docker/Dockerfile"
+  },
+  "workspaceFolder": "/app",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bitlang.cobol"
+      ]
+    }
+  }
+}

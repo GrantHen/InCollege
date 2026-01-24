@@ -1,0 +1,15 @@
+# build output
+incollege
+*.exe
+*.o
+*.obj
+
+# output logs
+out/*
+!out/.gitkeep
+
+# persisted accounts file (optional: include or exclude)
+data/accounts.dat
+
+# OS junk
+.DS_Store
