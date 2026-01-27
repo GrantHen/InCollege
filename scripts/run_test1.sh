@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-case_num=0
+case_num=1
 
 # project root directory
 root="$(cd "$(dirname "$0")/.." && pwd)"

@@ -1,0 +1,7 @@
+# Always use LF in repo
+*.sh  text eol=lf
+*.txt text eol=lf
+*.out text eol=lf
+*.cob text eol=lf
+*.cbl text eol=lf
+EOF
