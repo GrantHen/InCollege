@@ -37,7 +37,7 @@ This script resets *data/accounts.dat*
 
 This script runs the program for each case
 
-This script 'compares actual output' and 'expected output'
+This script compares 'actual output' and 'expected output'
 
 This script prints PASS or FAIL for each test
 
@@ -52,6 +52,7 @@ Program output is written to:
 will contain the data from the last automated test case.
 
 After running the test script, manually edit *test/InCollege-Input.txt* again if you want to run the program by hand.
+
 
 
 
