@@ -1,6 +1,48 @@
-1
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
 alice
+Please enter your password:
 Password1!
-3
-6
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
 1
+Please enter your username:
+alice
+Please enter your password:
+Password1!
+You have successfully logged in.
+
+Welcome, alice!
+1. Search for a job
+2. Find someone you know
+3. Learn a new skill
+9. Logout
+Enter your choice:
+3
+Learn a New Skill:
+1. Skill 1
+2. Skill 2
+3. Skill 3
+4. Skill 4
+5. Skill 5
+6. Go Back
+Enter your choice:
+6
+1. Search for a job
+2. Find someone you know
+3. Learn a new skill
+9. Logout
+Enter your choice:
+9
+--- END_OF_PROGRAM_EXECUTION ---
+
