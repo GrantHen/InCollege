@@ -4,16 +4,16 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT ACCOUNTS-FILE ASSIGN TO "data/accounts.dat"
+           SELECT ACCOUNTS-FILE ASSIGN TO "accounts.dat"
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS ACCOUNT-FILE-STATUS.
 
            *> all program input is read from a file
-           SELECT INPUT-FILE ASSIGN TO "test/InCollege-Input.txt"
+           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
            *> exact same output must also be written to a file
-           SELECT OUTPUT-FILE ASSIGN TO "out/InCollege-Output.txt"
+           SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
