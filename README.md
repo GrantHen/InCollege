@@ -28,7 +28,7 @@ Run the program from the project root:
 
 ----------- Automated Testing (Test 1) ----------------------------------------------------------------------------------------------------------------
 
-To run the automated test cases:
+To run the automated test cases (from project's root):
 ***./scripts/run_test1.sh***
 
 This script overwrites *test/InCollege-Input.txt* for each test case/n
@@ -52,6 +52,7 @@ Program output is written to:
 will contain the data from the last automated test case.
 
 After running the test script, manually edit *test/InCollege-Input.txt* again if you want to run the program by hand.
+
 
 
 
