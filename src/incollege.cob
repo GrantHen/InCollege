@@ -5,7 +5,8 @@
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
            SELECT ACCOUNTS-FILE ASSIGN TO "data/accounts.dat"
-               ORGANIZATION IS LINE SEQUENTIAL.
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS ACCOUNT-FILE-STATUS.
 
            *> all program input is read from a file
            SELECT INPUT-FILE ASSIGN TO "test/InCollege-Input.txt"
@@ -27,14 +28,18 @@
        01  OUTPUT-REC                 PIC X(200).
 
        WORKING-STORAGE SECTION.
+       *> File status for accounts file
+       01  ACCOUNT-FILE-STATUS        PIC XX.
 
        01  MAX-ACCOUNTS               PIC 9 VALUE 5. *> Maximum number of accounts
        01  ACCOUNT-COUNT              PIC 9 VALUE 0. *> Current number of accounts
 
+       *> User input storage
        01  USERNAME-IN                PIC X(20). *> Input username
        01  PASSWORD-IN                PIC X(12). *> Input password
        01  MENU-CHOICE                PIC 9 VALUE 0.
 
+       *> EOF flag for accounts file
        01  EOF-FLAG                   PIC X VALUE "N".
            88  EOF-YES                VALUE "Y".
            88  EOF-NO                 VALUE "N".
@@ -291,7 +296,15 @@
 
        LOAD-ACCOUNTS.
            OPEN INPUT ACCOUNTS-FILE
-           SET EOF-NO TO TRUE
+       
+           *> If file does not exist, create it, then reopen for input
+           IF ACCOUNT-FILE-STATUS = "35"
+               OPEN OUTPUT ACCOUNTS-FILE
+               CLOSE ACCOUNTS-FILE
+               OPEN INPUT ACCOUNTS-FILE
+           END-IF
+
+           *> Read all existing accounts into the table
            PERFORM UNTIL EOF-YES
                READ ACCOUNTS-FILE
                    AT END
@@ -415,9 +428,13 @@
                    WHEN 9
                        MOVE "--- END_OF_PROGRAM_EXECUTION ---" TO LINE-TEXT
                        PERFORM PRINT-LINE
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        CLOSE INPUT-FILE
                        CLOSE OUTPUT-FILE
                        STOP RUN
+
                    WHEN OTHER
                        MOVE "Invalid choice. Try again." TO LINE-TEXT
                        PERFORM PRINT-LINE
