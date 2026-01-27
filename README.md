@@ -9,7 +9,7 @@ Run the container and mount the project folder:
 ----------- Compile Program --------------------------------------------------------------------------------
 
 From the src folder, compile the program:
-****cobc -x -free incollege.cob***
+***cobc -x -free incollege.cob***
 
 Then return to the project root:
 ***cd ..***
@@ -52,6 +52,7 @@ Program output is written to:
 will contain the data from the last automated test case.
 
 After running the test script, manually edit *test/InCollege-Input.txt* again if you want to run the program by hand.
+
 
 
 
