@@ -20,3 +20,5 @@ incollege
 
 # Docker
 *.log
+
+test/test1/actual/
