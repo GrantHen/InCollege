@@ -1,6 +1,7 @@
 ----------- Docker Setup -----------------------------------------------------------------------------------------
 
 Build the Docker image:
+
 docker build -t incollege docker
 
 Run the container and mount the project folder:
@@ -48,3 +49,4 @@ data/accounts.dat is cleared during automated tests, but test/InCollege-Input.tx
 the data from the last automated test case.
 
 After running the test script, manually edit test/InCollege-Input.txt again if you want to run the program by hand.
+
