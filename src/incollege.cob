@@ -123,7 +123,7 @@
            READ INPUT-FILE
                AT END
                    SET INPUT-EOF-YES TO TRUE
-                   MOVE "" TO INPUT-REC
+                   MOVE " " TO INPUT-REC
                NOT AT END
                    *> Echo what "user typed" into BOTH console and the output file
                    MOVE FUNCTION TRIM(INPUT-REC) TO LINE-TEXT
