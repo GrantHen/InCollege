@@ -1,7 +1,6 @@
 ----------- Docker Setup -----------------------------------------------------------------------------------------
 
 Build the Docker image:
-
 docker build -t incollege docker
 
 Run the container and mount the project folder:
@@ -32,10 +31,14 @@ Run the program from the project root:
 To run the automated test cases:
 ./scripts/run_test1.sh
 
-This script overwrites test/InCollege-Input.txt for each test case
+This script overwrites test/InCollege-Input.txt for each test case/n
+
 This script resets data/accounts.dat
+
 This script runs the program for each case
+
 This script 'compares actual output' and 'expected output'
+
 This script prints PASS or FAIL for each test
 
 ----------- Important Notes --------------------------------------------------------------------------------------
@@ -49,4 +52,5 @@ data/accounts.dat is cleared during automated tests, but test/InCollege-Input.tx
 the data from the last automated test case.
 
 After running the test script, manually edit test/InCollege-Input.txt again if you want to run the program by hand.
+
 
