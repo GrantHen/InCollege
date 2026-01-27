@@ -1,4 +1,4 @@
------------ Docker Setup -----------------------------------------------------------------------------------------
+----------- Docker Setup ------------------------------------------------------------------------------------------------------------------------------
 
 Build the Docker image:
 ***docker build -t incollege docker***
@@ -6,7 +6,7 @@ Build the Docker image:
 Run the container and mount the project folder:
 ***docker run --rm -it -v ${PWD}:/app -w /app incollege***
 
------------ Compile Program --------------------------------------------------------------------------------
+----------- Compile Program ---------------------------------------------------------------------------------------------------------------------------
 
 From the src folder, compile the program:
 ***cobc -x -free incollege.cob***
@@ -14,7 +14,7 @@ From the src folder, compile the program:
 Then return to the project root:
 ***cd ..***
 
------------ Manual Input Execution -------------------------------------------------------------------------------
+----------- Manual Input Execution --------------------------------------------------------------------------------------------------------------------
 
 All program input is file-based. The program does NOT read from the keyboard *
 
@@ -26,7 +26,7 @@ Modify the file with the desired inputs such as menu choices, usernames, and pas
 Run the program from the project root:
 ***./incollege***
 
------------ Automated Testing (Test 1) ---------------------------------------------------------------------------
+----------- Automated Testing (Test 1) ----------------------------------------------------------------------------------------------------------------
 
 To run the automated test cases:
 ***./scripts/run_test1.sh***
@@ -41,7 +41,7 @@ This script 'compares actual output' and 'expected output'
 
 This script prints PASS or FAIL for each test
 
------------ Important Notes -------------------------------------------------------------------------------------------------------------------------
+----------- Important Notes ---------------------------------------------------------------------------------------------------------------------------
 
 Program output is written to:
 **out/InCollege-Output.txt**
@@ -52,6 +52,7 @@ Program output is written to:
 will contain the data from the last automated test case.
 
 After running the test script, manually edit *test/InCollege-Input.txt* again if you want to run the program by hand.
+
 
 
 
