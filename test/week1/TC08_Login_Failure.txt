@@ -1,4 +1,0 @@
-1
-alice
-WrongPass1!
-1

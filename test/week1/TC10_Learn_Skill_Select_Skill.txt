@@ -1,5 +1,0 @@
-1
-alice
-Password1!
-3
-1

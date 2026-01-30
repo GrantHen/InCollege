@@ -1,0 +1,91 @@
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+u1
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+u2
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+u3
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+u4
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+u5
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+All permitted accounts have been created, please come back later
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+u6
+Invalid choice. Try again.
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+Password1!
+Invalid choice. Try again.
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+9
+--- END_OF_PROGRAM_EXECUTION ---
