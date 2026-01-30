@@ -9,9 +9,6 @@ out/*
 !out/.gitkeep
 out/*.txt
 
-# persisted accounts file (optional: include or exclude)
-data/accounts.dat
-
 # OS junk
 .DS_Store
 
