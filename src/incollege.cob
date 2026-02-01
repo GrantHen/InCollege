@@ -4,7 +4,7 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT ACCOUNTS-FILE ASSIGN TO "accounts.dat"
+           SELECT ACCOUNTS-FILE ASSIGN TO "data/accounts.dat" *> changed pathing for consistent location
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS ACCOUNT-FILE-STATUS.
 
