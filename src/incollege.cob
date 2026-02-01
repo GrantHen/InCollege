@@ -13,11 +13,11 @@
                FILE STATUS IS PROFILE-FILE-STATUS.
 
            *> all program input is read from a file
-           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+           SELECT INPUT-FILE ASSIGN TO "test/InCollege-Input.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
            *> exact same output must also be written to a file
-           SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
+           SELECT OUTPUT-FILE ASSIGN TO "out/InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
@@ -593,10 +593,7 @@
                    WHEN 1
                        PERFORM CREATE-EDIT-PROFILE
                    WHEN 2
-                       MOVE "View My Profile is under construction." TO LINE-TEXT
-                       PERFORM PRINT-LINE
-                       MOVE " " TO LINE-TEXT
-                       PERFORM PRINT-LINE
+                       PERFORM VIEW-MY-PROFILE
                    WHEN 3
                        MOVE "Job search/internship is under construction." TO LINE-TEXT
                        PERFORM PRINT-LINE
@@ -678,6 +675,152 @@
 
            *> Return to top level post-login menu (we just fall back naturally)
            MOVE " " TO LINE-TEXT
+           PERFORM PRINT-LINE.
+
+
+       *> Week 2: View My Profile 
+       VIEW-MY-PROFILE.
+           *> Checks if profile exists
+           IF PROFILE-EXISTS(CURRENT-USER-INDEX) = "N"
+               MOVE "You have not created a profile yet." TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE " " TO LINE-TEXT
+               PERFORM PRINT-LINE
+               EXIT PARAGRAPH
+           END-IF
+
+           *> Display profile header
+           MOVE "--- Your Profile ---" TO LINE-TEXT
+           PERFORM PRINT-LINE
+
+           *> Display name
+           MOVE SPACES TO LINE-TEXT *> Helps with line buffer clearing
+           STRING "Name: "
+                  FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))
+                  " "
+                  FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display university
+           MOVE SPACES TO LINE-TEXT
+           STRING "University: "
+                  FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display major
+           MOVE SPACES TO LINE-TEXT
+           STRING "Major: "
+                  FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display graduation year
+           MOVE SPACES TO LINE-TEXT
+           STRING "Graduation Year: "
+                  FUNCTION TRIM(PROFILE-GRAD-YEAR(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display About Me if present
+           IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))) > 0
+               MOVE SPACES TO LINE-TEXT
+               STRING "About Me: "
+                      FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))
+                      DELIMITED BY SIZE
+                      INTO LINE-TEXT
+               END-STRING
+               PERFORM PRINT-LINE
+           END-IF
+
+           *> Display experiences
+           PERFORM VARYING EXP-IDX FROM 1 BY 1 UNTIL EXP-IDX > 3
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))) > 0
+                   IF EXP-IDX = 1
+                       MOVE "Experience:" TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Title: "
+                          FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Company: "
+                          FUNCTION TRIM(PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Dates: "
+                          FUNCTION TRIM(PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX))) > 0
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  Description: "
+                              FUNCTION TRIM(PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+                   END-IF
+               END-IF
+           END-PERFORM
+
+           *> Display education
+           PERFORM VARYING EDU-IDX FROM 1 BY 1 UNTIL EDU-IDX > 3
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))) > 0
+                   IF EDU-IDX = 1
+                       MOVE "Education:" TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Degree: "
+                          FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  University: "
+                          FUNCTION TRIM(PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Years: "
+                          FUNCTION TRIM(PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+               END-IF
+           END-PERFORM
+
+           *> Display footer
+           MOVE "--------------------" TO LINE-TEXT
            PERFORM PRINT-LINE.
 
        GET-FIRST-NAME.
