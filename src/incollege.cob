@@ -4,7 +4,7 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT ACCOUNTS-FILE ASSIGN TO "accounts.dat"
+           SELECT ACCOUNTS-FILE ASSIGN TO "data/accounts.dat" *> changed pathing for consistent location
                ORGANIZATION IS LINE SEQUENTIAL
                FILE STATUS IS ACCOUNT-FILE-STATUS.
 
@@ -13,11 +13,11 @@
                FILE STATUS IS PROFILE-FILE-STATUS.
 
            *> all program input is read from a file
-           SELECT INPUT-FILE ASSIGN TO "InCollege-Input.txt"
+           SELECT INPUT-FILE ASSIGN TO "test/InCollege-Input.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
            *> exact same output must also be written to a file
-           SELECT OUTPUT-FILE ASSIGN TO "InCollege-Output.txt"
+           SELECT OUTPUT-FILE ASSIGN TO "out/InCollege-Output.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
@@ -98,6 +98,7 @@
            88  NOT-LOGGED-IN          VALUE "N".
 
        01  POST-CHOICE                PIC 9 VALUE 0.
+       01  POST-SAVE-CHOICE           PIC 9 VALUE 1.
        01  SKILL-CHOICE               PIC 9 VALUE 0.
        01  CURRENT-USER-INDEX         PIC 9 VALUE 0.
 
@@ -116,6 +117,7 @@
 
        01  TEXT-LEN                   PIC 99 VALUE 0.
        01  TEMP-CHAR                  PIC X.
+       01  TRIMMED-INPUT              PIC X(200).
 
        01  GRAD-YEAR-NUM              PIC 9(4) VALUE 0.
        01  GRAD-YEAR-OK               PIC X VALUE "N".
@@ -125,8 +127,10 @@
        01  EXP-IDX                    PIC 9 VALUE 1.
        01  EDU-IDX                    PIC 9 VALUE 1.
 
-       *> Used for DONE checks
-       01  DONE-CHECK                 PIC X(20).
+       *> Controls whether to echo user input into output transcript
+       01  ECHO-USER-INPUT            PIC X VALUE "N".
+           88  ECHO-ON                VALUE "Y".
+           88  ECHO-OFF               VALUE "N".
 
        01  PROFILE-TABLE.
            05  PROFILE-ENTRY OCCURS 5 TIMES.
@@ -180,9 +184,11 @@
                    SET INPUT-EOF-YES TO TRUE
                    MOVE " " TO INPUT-REC
                NOT AT END
-                   *> Echo what "user typed" into BOTH console and the output file
-                   MOVE FUNCTION TRIM(INPUT-REC) TO LINE-TEXT
-                   PERFORM PRINT-LINE
+                   IF ECHO-ON
+                       *> Echo what "user typed" into BOTH console and the output file (optional)
+                       MOVE FUNCTION TRIM(INPUT-REC) TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
            END-READ.
 
        *> Helper: Get a 1-digit menu choice (from INPUT-REC)
@@ -593,10 +599,7 @@
                    WHEN 1
                        PERFORM CREATE-EDIT-PROFILE
                    WHEN 2
-                       MOVE "View My Profile is under construction." TO LINE-TEXT
-                       PERFORM PRINT-LINE
-                       MOVE " " TO LINE-TEXT
-                       PERFORM PRINT-LINE
+                       PERFORM VIEW-MY-PROFILE
                    WHEN 3
                        MOVE "Job search/internship is under construction." TO LINE-TEXT
                        PERFORM PRINT-LINE
@@ -642,90 +645,392 @@
 
        *> WEEK 2: Create/Edit My Profile
        CREATE-EDIT-PROFILE.
-           *> Header matches sample output
-           MOVE "--- Create/Edit Profile ---" TO LINE-TEXT
-           PERFORM PRINT-LINE
+           PERFORM UNTIL 1 = 0
+               *> Header matches sample output
+               MOVE "--- Create/Edit Profile ---" TO LINE-TEXT
+               PERFORM PRINT-LINE
 
-           *> Mark that this user has a profile now (so SAVE-PROFILES will write it)
-           MOVE STORED-USERNAME(CURRENT-USER-INDEX) TO PROFILE-USERNAME(CURRENT-USER-INDEX)
-           MOVE "Y" TO PROFILE-EXISTS(CURRENT-USER-INDEX)
+               *> Mark that this user has a profile now (so SAVE-PROFILES will write it)
+               MOVE STORED-USERNAME(CURRENT-USER-INDEX) TO PROFILE-USERNAME(CURRENT-USER-INDEX)
+               MOVE "Y" TO PROFILE-EXISTS(CURRENT-USER-INDEX)
 
-           *> Required fields (keep asking until non-blank)
-           PERFORM GET-FIRST-NAME
-           PERFORM GET-LAST-NAME
-           PERFORM GET-UNIVERSITY
-           PERFORM GET-MAJOR
+               *> Required fields (allow blank to keep existing values when editing)
+               PERFORM GET-FIRST-NAME
+               PERFORM GET-LAST-NAME
+               PERFORM GET-UNIVERSITY
+               PERFORM GET-MAJOR
 
-           PERFORM GET-GRAD-YEAR
+               PERFORM GET-GRAD-YEAR
 
-           *> Optional About Me (blank is allowed)
-           MOVE "Enter About Me (optional, max 200 chars, enter blank line to skip): " TO LINE-TEXT
-           PERFORM PRINT-LINE
-           PERFORM READ-NEXT-INPUT
-           MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-ABOUT(CURRENT-USER-INDEX)
+               *> Optional About Me (blank keeps current when editing)
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Enter About Me (blank keeps current): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+               ELSE
+                   MOVE "Enter About Me (optional, max 200 chars, enter blank line to skip): " TO LINE-TEXT
+               END-IF
+               PERFORM PRINT-LINE
+               PERFORM READ-NEXT-INPUT
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+               IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                   MOVE TRIMMED-INPUT TO PROFILE-ABOUT(CURRENT-USER-INDEX)
+               END-IF
 
-           *> Experience loop (optional, up to 3)
-           PERFORM GET-EXPERIENCE
+               *> Experience loop (optional, up to 3)
+               PERFORM GET-EXPERIENCE
 
-           *> Education loop (optional, up to 3)
-           PERFORM GET-EDUCATION
+               *> Education loop (optional, up to 3)
+               PERFORM GET-EDUCATION
 
-           *> Save to profiles.dat
-           PERFORM SAVE-PROFILES
+               *> Save to profiles.dat
+               PERFORM SAVE-PROFILES
 
-           MOVE "Profile saved successfully!" TO LINE-TEXT
-           PERFORM PRINT-LINE
+               MOVE "Profile saved successfully!" TO LINE-TEXT
+               PERFORM PRINT-LINE
 
-           *> Return to top level post-login menu (we just fall back naturally)
+               *> Present explicit option to return to main menu after saving
+               MOVE 0 TO POST-SAVE-CHOICE
+               PERFORM UNTIL POST-SAVE-CHOICE = 1 OR POST-SAVE-CHOICE = 2
+                   MOVE "1. Return to Main Menu" TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   MOVE "2. Edit Profile Again" TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   MOVE "Enter your choice: " TO LINE-TEXT
+                   PERFORM PRINT-LINE
+
+                   PERFORM READ-NEXT-INPUT
+                   IF INPUT-EOF-YES
+                       MOVE 1 TO POST-SAVE-CHOICE
+                   ELSE
+                       IF INPUT-REC(1:1) >= "1" AND INPUT-REC(1:1) <= "2"
+                           COMPUTE POST-SAVE-CHOICE = FUNCTION NUMVAL(INPUT-REC(1:1))
+                       ELSE
+                           MOVE "Invalid choice. Try again." TO LINE-TEXT
+                           PERFORM PRINT-LINE
+                       END-IF
+                   END-IF
+               END-PERFORM
+
+               IF POST-SAVE-CHOICE = 2
+                   MOVE " " TO LINE-TEXT
+                   PERFORM PRINT-LINE
+               ELSE
+                   EXIT PERFORM
+               END-IF
+           END-PERFORM
+
+           *> Return to top level post-login menu
            MOVE " " TO LINE-TEXT
            PERFORM PRINT-LINE.
 
+
+       *> Week 2: View My Profile 
+       VIEW-MY-PROFILE.
+           *> Checks if profile exists
+           IF PROFILE-EXISTS(CURRENT-USER-INDEX) = "N"
+               MOVE "You have not created a profile yet." TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE " " TO LINE-TEXT
+               PERFORM PRINT-LINE
+               EXIT PARAGRAPH
+           END-IF
+
+           *> Display profile header
+           MOVE "--- Your Profile ---" TO LINE-TEXT
+           PERFORM PRINT-LINE
+
+           *> Display name
+           MOVE SPACES TO LINE-TEXT *> Helps with line buffer clearing
+           STRING "Name: "
+                  FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))
+                  " "
+                  FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display university
+           MOVE SPACES TO LINE-TEXT
+           STRING "University: "
+                  FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display major
+           MOVE SPACES TO LINE-TEXT
+           STRING "Major: "
+                  FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display graduation year
+           MOVE SPACES TO LINE-TEXT
+           STRING "Graduation Year: "
+                  FUNCTION TRIM(PROFILE-GRAD-YEAR(CURRENT-USER-INDEX))
+                  DELIMITED BY SIZE
+                  INTO LINE-TEXT
+           END-STRING
+           PERFORM PRINT-LINE
+
+           *> Display About Me if present
+           IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))) > 0
+               MOVE SPACES TO LINE-TEXT
+               STRING "About Me: "
+                      FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))
+                      DELIMITED BY SIZE
+                      INTO LINE-TEXT
+               END-STRING
+               PERFORM PRINT-LINE
+           END-IF
+
+           *> Display experiences
+           PERFORM VARYING EXP-IDX FROM 1 BY 1 UNTIL EXP-IDX > 3
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))) > 0
+                   IF EXP-IDX = 1
+                       MOVE "Experience:" TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Title: "
+                          FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Company: "
+                          FUNCTION TRIM(PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Dates: "
+                          FUNCTION TRIM(PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX))) > 0
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  Description: "
+                              FUNCTION TRIM(PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+                   END-IF
+               END-IF
+           END-PERFORM
+
+           *> Display education
+           PERFORM VARYING EDU-IDX FROM 1 BY 1 UNTIL EDU-IDX > 3
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))) > 0
+                   IF EDU-IDX = 1
+                       MOVE "Education:" TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Degree: "
+                          FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  University: "
+                          FUNCTION TRIM(PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "  Years: "
+                          FUNCTION TRIM(PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX))
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+               END-IF
+           END-PERFORM
+
+           *> Display footer
+           MOVE "--------------------" TO LINE-TEXT
+           PERFORM PRINT-LINE.
+
        GET-FIRST-NAME.
-           PERFORM UNTIL FUNCTION LENGTH(FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))) > 0
-               MOVE "Enter First Name: " TO LINE-TEXT
+           PERFORM UNTIL 1 = 0
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Enter First Name (blank keeps '"
+                          FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))
+                          "'): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+               ELSE
+                   MOVE "Enter First Name: " TO LINE-TEXT
+               END-IF
+
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-FIRST-NAME(CURRENT-USER-INDEX)
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION LENGTH(TRIMMED-INPUT) = 0
+                       IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))) > 0
+                           EXIT PERFORM 
+                       ELSE
+                           MOVE "First Name is required." TO LINE-TEXT
+                           PERFORM PRINT-LINE
+                       END-IF
+                   ELSE
+                       MOVE TRIMMED-INPUT TO PROFILE-FIRST-NAME(CURRENT-USER-INDEX)
+                       EXIT PERFORM
+                   END-IF
            END-PERFORM.
 
        GET-LAST-NAME.
-           PERFORM UNTIL FUNCTION LENGTH(FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))) > 0
-               MOVE "Enter Last Name: " TO LINE-TEXT
+           PERFORM UNTIL 1 = 0
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Enter Last Name (blank keeps '"
+                          FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))
+                          "'): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+               ELSE
+                   MOVE "Enter Last Name: " TO LINE-TEXT
+               END-IF
+
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-LAST-NAME(CURRENT-USER-INDEX)
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION LENGTH(TRIMMED-INPUT) = 0
+                       IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))) > 0
+                           EXIT PERFORM 
+                       ELSE
+                           MOVE "Last Name is required." TO LINE-TEXT
+                           PERFORM PRINT-LINE
+                       END-IF
+                   ELSE
+                       MOVE TRIMMED-INPUT TO PROFILE-LAST-NAME(CURRENT-USER-INDEX)
+                       EXIT PERFORM
+                   END-IF
            END-PERFORM.
 
        GET-UNIVERSITY.
-           PERFORM UNTIL FUNCTION LENGTH(FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))) > 0
-               MOVE "Enter University/College Attended: " TO LINE-TEXT
+           PERFORM UNTIL 1 = 0
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Enter University/College Attended (blank keeps '"
+                          FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))
+                          "'): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+               ELSE
+                   MOVE "Enter University/College Attended: " TO LINE-TEXT
+               END-IF
+
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-UNIVERSITY(CURRENT-USER-INDEX)
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION LENGTH(TRIMMED-INPUT) = 0
+                       IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))) > 0
+                           EXIT PERFORM 
+                       ELSE
+                           MOVE "University/College is required." TO LINE-TEXT
+                           PERFORM PRINT-LINE
+                       END-IF
+                   ELSE
+                       MOVE TRIMMED-INPUT TO PROFILE-UNIVERSITY(CURRENT-USER-INDEX)
+                       EXIT PERFORM
+                   END-IF
            END-PERFORM.
 
        GET-MAJOR.
-           PERFORM UNTIL FUNCTION LENGTH(FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))) > 0
-               MOVE "Enter Major: " TO LINE-TEXT
+           PERFORM UNTIL 1 = 0
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Enter Major (blank keeps '"
+                          FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))
+                          "'): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+               ELSE
+                   MOVE "Enter Major: " TO LINE-TEXT
+               END-IF
+
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-MAJOR(CURRENT-USER-INDEX)
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION LENGTH(TRIMMED-INPUT) = 0
+                       IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))) > 0
+                           EXIT PERFORM 
+                       ELSE
+                           MOVE "Major is required." TO LINE-TEXT
+                           PERFORM PRINT-LINE
+                       END-IF
+                   ELSE
+                       MOVE TRIMMED-INPUT TO PROFILE-MAJOR(CURRENT-USER-INDEX)
+                       EXIT PERFORM
+                   END-IF
            END-PERFORM.
 
        *> Graduation year must be 4-digit numeric and reasonable
        GET-GRAD-YEAR.
            SET GRAD-NOT-VALID TO TRUE
            PERFORM UNTIL GRAD-VALID
-               MOVE "Enter Graduation Year (YYYY): " TO LINE-TEXT
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-GRAD-YEAR(CURRENT-USER-INDEX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Enter Graduation Year (YYYY, blank keeps '"
+                          FUNCTION TRIM(PROFILE-GRAD-YEAR(CURRENT-USER-INDEX))
+                          "'): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+               ELSE
+                   MOVE "Enter Graduation Year (YYYY): " TO LINE-TEXT
+               END-IF
+
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-GRAD-YEAR(CURRENT-USER-INDEX)
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
 
-               PERFORM VALIDATE-GRAD-YEAR
+               IF FUNCTION LENGTH(TRIMMED-INPUT) = 0
+                   IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-GRAD-YEAR(CURRENT-USER-INDEX))) > 0
+                       SET GRAD-VALID TO TRUE *> keep existing value
+                   ELSE
+                       MOVE "Graduation Year is required." TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
+               ELSE
+                   MOVE TRIMMED-INPUT TO PROFILE-GRAD-YEAR(CURRENT-USER-INDEX)
+                   PERFORM VALIDATE-GRAD-YEAR
 
-               IF GRAD-NOT-VALID
-                   MOVE "Invalid graduation year. Please enter a valid 4-digit year." TO LINE-TEXT
-                   PERFORM PRINT-LINE
+                   IF GRAD-NOT-VALID
+                       MOVE "Invalid graduation year. Please enter a valid 4-digit year." TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                   END-IF
                END-IF
            END-PERFORM.
 
@@ -756,112 +1061,176 @@
            SET GRAD-VALID TO TRUE.
 
        GET-EXPERIENCE.
-           *> Clear experience fields if they are editing
            PERFORM VARYING EXP-IDX FROM 1 BY 1 UNTIL EXP-IDX > 3
-               MOVE SPACES TO PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX)
-               MOVE SPACES TO PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX)
-               MOVE SPACES TO PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX)
-               MOVE SPACES TO PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX)
-           END-PERFORM
-
-           PERFORM VARYING EXP-IDX FROM 1 BY 1 UNTIL EXP-IDX > 3
-               MOVE "Add Experience (optional, max 3 entries. Enter 'DONE' to finish): " TO LINE-TEXT
+               MOVE SPACES TO LINE-TEXT
+               STRING "Experience #"
+                      EXP-IDX
+                      " - Title (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish): "
+                      DELIMITED BY SIZE
+                      INTO LINE-TEXT
+               END-STRING
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
 
-               MOVE FUNCTION TRIM(INPUT-REC) TO DONE-CHECK
-               IF FUNCTION UPPER-CASE(DONE-CHECK) = "DONE"
+               IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
                    EXIT PERFORM
                END-IF
 
-               STRING "Experience #"
-                      EXP-IDX
-                      " - Title: "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX)
+               IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                   MOVE SPACES TO PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX)
+                   MOVE SPACES TO PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX)
+                   MOVE SPACES TO PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX)
+                   MOVE SPACES TO PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX)
+                   CONTINUE
+               END-IF
 
-               STRING "Experience #"
-                      EXP-IDX
-                      " - Company/Organization: "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX)
+               IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                   MOVE TRIMMED-INPUT TO PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX)
+               END-IF
 
-               STRING "Experience #"
-                      EXP-IDX
-                      " - Dates (e.g., Summer 2024): "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX)
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Experience #"
+                          EXP-IDX
+                          " - Company/Organization (blank keeps current, 'DONE' to finish): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   PERFORM READ-NEXT-INPUT
+                   MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
 
-               STRING "Experience #"
-                      EXP-IDX
-                      " - Description (optional, max 100 chars, blank to skip): "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX)
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
+                       EXIT PERFORM
+                   END-IF
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                       MOVE SPACES TO PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX)
+                   ELSE
+                       IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                           MOVE TRIMMED-INPUT TO PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX)
+                       END-IF
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Experience #"
+                          EXP-IDX
+                          " - Dates (e.g., Summer 2024) (blank keeps current, 'DONE' to finish): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   PERFORM READ-NEXT-INPUT
+                   MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
+                       EXIT PERFORM
+                   END-IF
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                       MOVE SPACES TO PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX)
+                   ELSE
+                       IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                           MOVE TRIMMED-INPUT TO PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX)
+                       END-IF
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Experience #"
+                          EXP-IDX
+                          " - Description (optional, blank keeps current, 'DONE' to finish): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   PERFORM READ-NEXT-INPUT
+                   MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
+                       EXIT PERFORM
+                   END-IF
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                       MOVE SPACES TO PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX)
+                   ELSE
+                       IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                           MOVE TRIMMED-INPUT TO PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX)
+                       END-IF
+                   END-IF
+               END-IF
            END-PERFORM.
 
        GET-EDUCATION.
-           *> Clear education fields if they are editing
            PERFORM VARYING EDU-IDX FROM 1 BY 1 UNTIL EDU-IDX > 3
-               MOVE SPACES TO PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX)
-               MOVE SPACES TO PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX)
-               MOVE SPACES TO PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX)
-           END-PERFORM
-
-           PERFORM VARYING EDU-IDX FROM 1 BY 1 UNTIL EDU-IDX > 3
-               MOVE "Add Education (optional, max 3 entries. Enter 'DONE' to finish): " TO LINE-TEXT
+               MOVE SPACES TO LINE-TEXT
+               STRING "Education #"
+                      EDU-IDX
+                      " - Degree (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish): "
+                      DELIMITED BY SIZE
+                      INTO LINE-TEXT
+               END-STRING
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
+               MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
 
-               MOVE FUNCTION TRIM(INPUT-REC) TO DONE-CHECK
-               IF FUNCTION UPPER-CASE(DONE-CHECK) = "DONE"
+               IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
                    EXIT PERFORM
                END-IF
 
-               STRING "Education #"
-                      EDU-IDX
-                      " - Degree: "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX)
+               IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                   MOVE SPACES TO PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX)
+                   MOVE SPACES TO PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX)
+                   MOVE SPACES TO PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX)
+                   CONTINUE
+               END-IF
 
-               STRING "Education #"
-                      EDU-IDX
-                      " - University/College: "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX)
+               IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                   MOVE TRIMMED-INPUT TO PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX)
+               END-IF
 
-               STRING "Education #"
-                      EDU-IDX
-                      " - Years Attended (e.g., 2023-2025): "
-                      DELIMITED BY SIZE
-                      INTO LINE-TEXT
-               END-STRING
-               PERFORM PRINT-LINE
-               PERFORM READ-NEXT-INPUT
-               MOVE FUNCTION TRIM(INPUT-REC) TO PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX)
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))) > 0
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Education #"
+                          EDU-IDX
+                          " - University/College (blank keeps current, 'DONE' to finish): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   PERFORM READ-NEXT-INPUT
+                   MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
+                       EXIT PERFORM
+                   END-IF
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                       MOVE SPACES TO PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX)
+                   ELSE
+                       IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                           MOVE TRIMMED-INPUT TO PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX)
+                       END-IF
+                   END-IF
+
+                   MOVE SPACES TO LINE-TEXT
+                   STRING "Education #"
+                          EDU-IDX
+                          " - Years Attended (e.g., 2023-2025) (blank keeps current, 'DONE' to finish): "
+                          DELIMITED BY SIZE
+                          INTO LINE-TEXT
+                   END-STRING
+                   PERFORM PRINT-LINE
+                   PERFORM READ-NEXT-INPUT
+                   MOVE FUNCTION TRIM(INPUT-REC) TO TRIMMED-INPUT
+
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "DONE"
+                       EXIT PERFORM
+                   END-IF
+                   IF FUNCTION UPPER-CASE(TRIMMED-INPUT) = "CLEAR"
+                       MOVE SPACES TO PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX)
+                   ELSE
+                       IF FUNCTION LENGTH(TRIMMED-INPUT) > 0
+                           MOVE TRIMMED-INPUT TO PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX)
+                       END-IF
+                   END-IF
+               END-IF
            END-PERFORM.
 
        LEARN-NEW-SKILL.
@@ -880,7 +1249,7 @@
                MOVE "5. Skill 5" TO LINE-TEXT
                PERFORM PRINT-LINE
 
-               *> Spec wording: Go Back should return to previous menu
+               *> Spec wording: Go Back return to previous menu
                MOVE "6. Go Back" TO LINE-TEXT
                PERFORM PRINT-LINE
 
