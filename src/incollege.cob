@@ -1,4 +1,4 @@
-       IDENTIFICATION DIVISION.
+IDENTIFICATION DIVISION.
        PROGRAM-ID. InCollege.
 
        ENVIRONMENT DIVISION.
@@ -131,6 +131,17 @@
        01  ECHO-USER-INPUT            PIC X VALUE "N".
            88  ECHO-ON                VALUE "Y".
            88  ECHO-OFF               VALUE "N".
+
+       *> TASK 2: Search-related variables
+       01  SEARCH-FULL-NAME           PIC X(100).
+       01  SEARCH-FIRST-NAME          PIC X(30).
+       01  SEARCH-LAST-NAME           PIC X(30).
+       01  USER-FOUND-FLAG            PIC X VALUE "N".
+           88  USER-FOUND             VALUE "Y".
+           88  USER-NOT-FOUND         VALUE "N".
+       01  DISPLAY-USER-INDEX         PIC 9 VALUE 0.
+       01  SPACE-POS                  PIC 99 VALUE 0.
+       01  NAME-SCAN-IDX              PIC 99 VALUE 1.
 
        01  PROFILE-TABLE.
            05  PROFILE-ENTRY OCCURS 5 TIMES.
@@ -606,10 +617,7 @@
                        MOVE " " TO LINE-TEXT
                        PERFORM PRINT-LINE
                    WHEN 4
-                       MOVE "Find someone you know is under construction." TO LINE-TEXT
-                       PERFORM PRINT-LINE
-                       MOVE " " TO LINE-TEXT
-                       PERFORM PRINT-LINE
+                       PERFORM SEARCH-USER-BY-NAME
                    WHEN 5
                        PERFORM LEARN-NEW-SKILL
                    WHEN 9
@@ -727,27 +735,31 @@
            PERFORM PRINT-LINE.
 
 
-       *> Week 2: View My Profile 
-       VIEW-MY-PROFILE.
-           *> Checks if profile exists
-           IF PROFILE-EXISTS(CURRENT-USER-INDEX) = "N"
-               MOVE "You have not created a profile yet." TO LINE-TEXT
-               PERFORM PRINT-LINE
-               MOVE " " TO LINE-TEXT
+       *> ============================================================
+       *> TASK 1: FULL PROFILE DISPLAY ROUTINE (CORE LOGIC)
+       *> ============================================================
+       *> This routine displays ALL profile fields for a given user index
+       *> It assumes DISPLAY-USER-INDEX is set before calling
+       *> Uses PRINT-LINE for all output (writes to both screen and file)
+       *> ============================================================
+       DISPLAY-USER-PROFILE.
+           *> Check if the user has a profile
+           IF PROFILE-EXISTS(DISPLAY-USER-INDEX) = "N"
+               MOVE "This user has not created a profile yet." TO LINE-TEXT
                PERFORM PRINT-LINE
                EXIT PARAGRAPH
            END-IF
 
            *> Display profile header
-           MOVE "--- Your Profile ---" TO LINE-TEXT
+           MOVE "--- User Profile ---" TO LINE-TEXT
            PERFORM PRINT-LINE
 
            *> Display name
-           MOVE SPACES TO LINE-TEXT *> Helps with line buffer clearing
+           MOVE SPACES TO LINE-TEXT
            STRING "Name: "
-                  FUNCTION TRIM(PROFILE-FIRST-NAME(CURRENT-USER-INDEX))
+                  FUNCTION TRIM(PROFILE-FIRST-NAME(DISPLAY-USER-INDEX))
                   " "
-                  FUNCTION TRIM(PROFILE-LAST-NAME(CURRENT-USER-INDEX))
+                  FUNCTION TRIM(PROFILE-LAST-NAME(DISPLAY-USER-INDEX))
                   DELIMITED BY SIZE
                   INTO LINE-TEXT
            END-STRING
@@ -756,7 +768,7 @@
            *> Display university
            MOVE SPACES TO LINE-TEXT
            STRING "University: "
-                  FUNCTION TRIM(PROFILE-UNIVERSITY(CURRENT-USER-INDEX))
+                  FUNCTION TRIM(PROFILE-UNIVERSITY(DISPLAY-USER-INDEX))
                   DELIMITED BY SIZE
                   INTO LINE-TEXT
            END-STRING
@@ -765,7 +777,7 @@
            *> Display major
            MOVE SPACES TO LINE-TEXT
            STRING "Major: "
-                  FUNCTION TRIM(PROFILE-MAJOR(CURRENT-USER-INDEX))
+                  FUNCTION TRIM(PROFILE-MAJOR(DISPLAY-USER-INDEX))
                   DELIMITED BY SIZE
                   INTO LINE-TEXT
            END-STRING
@@ -774,103 +786,231 @@
            *> Display graduation year
            MOVE SPACES TO LINE-TEXT
            STRING "Graduation Year: "
-                  FUNCTION TRIM(PROFILE-GRAD-YEAR(CURRENT-USER-INDEX))
+                  FUNCTION TRIM(PROFILE-GRAD-YEAR(DISPLAY-USER-INDEX))
                   DELIMITED BY SIZE
                   INTO LINE-TEXT
            END-STRING
            PERFORM PRINT-LINE
 
-           *> Display About Me if present
-           IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))) > 0
-               MOVE SPACES TO LINE-TEXT
+           *> Display About Me (always show field, even if empty)
+           MOVE SPACES TO LINE-TEXT
+           IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-ABOUT(DISPLAY-USER-INDEX))) > 0
                STRING "About Me: "
-                      FUNCTION TRIM(PROFILE-ABOUT(CURRENT-USER-INDEX))
+                      FUNCTION TRIM(PROFILE-ABOUT(DISPLAY-USER-INDEX))
                       DELIMITED BY SIZE
                       INTO LINE-TEXT
                END-STRING
+           ELSE
+               MOVE "About Me: None" TO LINE-TEXT
+           END-IF
+           PERFORM PRINT-LINE
+
+           *> Display experiences (show "None" if no experiences)
+           MOVE 0 TO EXP-IDX
+           PERFORM VARYING I FROM 1 BY 1 UNTIL I > 3
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-TITLE(DISPLAY-USER-INDEX, I))) > 0
+                   ADD 1 TO EXP-IDX
+               END-IF
+           END-PERFORM
+
+           IF EXP-IDX = 0
+               MOVE "Experience: None" TO LINE-TEXT
                PERFORM PRINT-LINE
+           ELSE
+               MOVE "Experience:" TO LINE-TEXT
+               PERFORM PRINT-LINE
+
+               PERFORM VARYING I FROM 1 BY 1 UNTIL I > 3
+                   IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-TITLE(DISPLAY-USER-INDEX, I))) > 0
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  Title: "
+                              FUNCTION TRIM(PROFILE-EXP-TITLE(DISPLAY-USER-INDEX, I))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  Company: "
+                              FUNCTION TRIM(PROFILE-EXP-COMPANY(DISPLAY-USER-INDEX, I))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  Dates: "
+                              FUNCTION TRIM(PROFILE-EXP-DATES(DISPLAY-USER-INDEX, I))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+
+                       IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-DESC(DISPLAY-USER-INDEX, I))) > 0
+                           MOVE SPACES TO LINE-TEXT
+                           STRING "  Description: "
+                                  FUNCTION TRIM(PROFILE-EXP-DESC(DISPLAY-USER-INDEX, I))
+                                  DELIMITED BY SIZE
+                                  INTO LINE-TEXT
+                           END-STRING
+                           PERFORM PRINT-LINE
+                       END-IF
+                   END-IF
+               END-PERFORM
            END-IF
 
-           *> Display experiences
-           PERFORM VARYING EXP-IDX FROM 1 BY 1 UNTIL EXP-IDX > 3
-               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))) > 0
-                   IF EXP-IDX = 1
-                       MOVE "Experience:" TO LINE-TEXT
-                       PERFORM PRINT-LINE
-                   END-IF
+           *> Display education (show "None" if no education)
+           MOVE 0 TO EDU-IDX
+           PERFORM VARYING I FROM 1 BY 1 UNTIL I > 3
+               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EDU-DEGREE(DISPLAY-USER-INDEX, I))) > 0
+                   ADD 1 TO EDU-IDX
+               END-IF
+           END-PERFORM
 
-                   MOVE SPACES TO LINE-TEXT
-                   STRING "  Title: "
-                          FUNCTION TRIM(PROFILE-EXP-TITLE(CURRENT-USER-INDEX, EXP-IDX))
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
+           IF EDU-IDX = 0
+               MOVE "Education: None" TO LINE-TEXT
+               PERFORM PRINT-LINE
+           ELSE
+               MOVE "Education:" TO LINE-TEXT
+               PERFORM PRINT-LINE
 
-                   MOVE SPACES TO LINE-TEXT
-                   STRING "  Company: "
-                          FUNCTION TRIM(PROFILE-EXP-COMPANY(CURRENT-USER-INDEX, EXP-IDX))
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
-
-                   MOVE SPACES TO LINE-TEXT
-                   STRING "  Dates: "
-                          FUNCTION TRIM(PROFILE-EXP-DATES(CURRENT-USER-INDEX, EXP-IDX))
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
-
-                   IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX))) > 0
+               PERFORM VARYING I FROM 1 BY 1 UNTIL I > 3
+                   IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EDU-DEGREE(DISPLAY-USER-INDEX, I))) > 0
                        MOVE SPACES TO LINE-TEXT
-                       STRING "  Description: "
-                              FUNCTION TRIM(PROFILE-EXP-DESC(CURRENT-USER-INDEX, EXP-IDX))
+                       STRING "  Degree: "
+                              FUNCTION TRIM(PROFILE-EDU-DEGREE(DISPLAY-USER-INDEX, I))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  University: "
+                              FUNCTION TRIM(PROFILE-EDU-SCHOOL(DISPLAY-USER-INDEX, I))
+                              DELIMITED BY SIZE
+                              INTO LINE-TEXT
+                       END-STRING
+                       PERFORM PRINT-LINE
+
+                       MOVE SPACES TO LINE-TEXT
+                       STRING "  Years: "
+                              FUNCTION TRIM(PROFILE-EDU-YEARS(DISPLAY-USER-INDEX, I))
                               DELIMITED BY SIZE
                               INTO LINE-TEXT
                        END-STRING
                        PERFORM PRINT-LINE
                    END-IF
-               END-IF
-           END-PERFORM
-
-           *> Display education
-           PERFORM VARYING EDU-IDX FROM 1 BY 1 UNTIL EDU-IDX > 3
-               IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))) > 0
-                   IF EDU-IDX = 1
-                       MOVE "Education:" TO LINE-TEXT
-                       PERFORM PRINT-LINE
-                   END-IF
-
-                   MOVE SPACES TO LINE-TEXT
-                   STRING "  Degree: "
-                          FUNCTION TRIM(PROFILE-EDU-DEGREE(CURRENT-USER-INDEX, EDU-IDX))
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
-
-                   MOVE SPACES TO LINE-TEXT
-                   STRING "  University: "
-                          FUNCTION TRIM(PROFILE-EDU-SCHOOL(CURRENT-USER-INDEX, EDU-IDX))
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
-                   MOVE SPACES TO LINE-TEXT
-                   STRING "  Years: "
-                          FUNCTION TRIM(PROFILE-EDU-YEARS(CURRENT-USER-INDEX, EDU-IDX))
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
-               END-IF
-           END-PERFORM
+               END-PERFORM
+           END-IF
 
            *> Display footer
            MOVE "--------------------" TO LINE-TEXT
            PERFORM PRINT-LINE.
+
+       *> Week 2: View My Profile (now uses the shared DISPLAY-USER-PROFILE)
+       VIEW-MY-PROFILE.
+           *> Set the display index to current user
+           MOVE CURRENT-USER-INDEX TO DISPLAY-USER-INDEX
+           
+           *> Call the shared display routine
+           PERFORM DISPLAY-USER-PROFILE
+           
+           *> Add blank line after display
+           MOVE " " TO LINE-TEXT
+           PERFORM PRINT-LINE.
+
+       *> ============================================================
+       *> TASK 2: EXACT NAME SEARCH LOGIC
+       *> ============================================================
+       *> Searches for a user by exact first and last name match
+       *> Reads full name from input, splits it, and compares
+       *> ============================================================
+       SEARCH-USER-BY-NAME.
+           *> Initialize search flag
+           SET USER-NOT-FOUND TO TRUE
+
+           *> Prompt for full name
+           MOVE "Enter the full name (First Last): " TO LINE-TEXT
+           PERFORM PRINT-LINE
+
+           *> Read the search name from input
+           PERFORM READ-NEXT-INPUT
+           MOVE FUNCTION TRIM(INPUT-REC) TO SEARCH-FULL-NAME
+
+           *> Split the full name into first and last
+           PERFORM SPLIT-FULL-NAME
+
+           *> If splitting failed (no space found), report error
+           IF SPACE-POS = 0
+               MOVE "Invalid name format. Please enter 'First Last'." TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE " " TO LINE-TEXT
+               PERFORM PRINT-LINE
+               EXIT PARAGRAPH
+           END-IF
+
+           *> Loop through all accounts and compare names
+           PERFORM VARYING I FROM 1 BY 1 UNTIL I > ACCOUNT-COUNT
+               IF USER-NOT-FOUND
+                   PERFORM COMPARE-NAMES
+                   IF USER-FOUND
+                       *> Found a match - set display index and show profile
+                       MOVE I TO DISPLAY-USER-INDEX
+                       PERFORM DISPLAY-USER-PROFILE
+                       EXIT PERFORM
+                   END-IF
+               END-IF
+           END-PERFORM
+
+           *> If we finished the loop without finding anyone
+           IF USER-NOT-FOUND
+               MOVE "No one by that name could be found." TO LINE-TEXT
+               PERFORM PRINT-LINE
+           END-IF
+
+           *> Add blank line
+           MOVE " " TO LINE-TEXT
+           PERFORM PRINT-LINE.
+
+       *> Helper: Split full name into first and last name
+       SPLIT-FULL-NAME.
+           MOVE SPACES TO SEARCH-FIRST-NAME
+           MOVE SPACES TO SEARCH-LAST-NAME
+           MOVE 0 TO SPACE-POS
+
+           *> Find the first space in the full name
+           PERFORM VARYING NAME-SCAN-IDX FROM 1 BY 1 
+                   UNTIL NAME-SCAN-IDX > FUNCTION LENGTH(FUNCTION TRIM(SEARCH-FULL-NAME))
+               IF SEARCH-FULL-NAME(NAME-SCAN-IDX:1) = " " AND SPACE-POS = 0
+                   MOVE NAME-SCAN-IDX TO SPACE-POS
+               END-IF
+           END-PERFORM
+
+           *> If space found, split the name
+           IF SPACE-POS > 0
+               *> Extract first name (everything before space)
+               MOVE SEARCH-FULL-NAME(1:SPACE-POS - 1) TO SEARCH-FIRST-NAME
+               
+               *> Extract last name (everything after space)
+               COMPUTE TEXT-LEN = FUNCTION LENGTH(FUNCTION TRIM(SEARCH-FULL-NAME)) - SPACE-POS
+               IF TEXT-LEN > 0
+                   MOVE SEARCH-FULL-NAME(SPACE-POS + 1:TEXT-LEN) TO SEARCH-LAST-NAME
+               END-IF
+           END-IF.
+
+       *> Helper: Compare search names with user at index I (exact match)
+       COMPARE-NAMES.
+           *> Only compare if this user has a profile
+           IF PROFILE-EXISTS(I) = "Y"
+               *> Exact match: both first and last must match
+               *> Using UPPER-CASE for case-insensitive comparison
+               IF FUNCTION UPPER-CASE(FUNCTION TRIM(SEARCH-FIRST-NAME))
+                  = FUNCTION UPPER-CASE(FUNCTION TRIM(PROFILE-FIRST-NAME(I)))
+                  AND FUNCTION UPPER-CASE(FUNCTION TRIM(SEARCH-LAST-NAME))
+                  = FUNCTION UPPER-CASE(FUNCTION TRIM(PROFILE-LAST-NAME(I)))
+                   SET USER-FOUND TO TRUE
+               END-IF
+           END-IF.
 
        GET-FIRST-NAME.
            PERFORM UNTIL 1 = 0
