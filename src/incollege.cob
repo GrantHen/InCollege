@@ -166,6 +166,11 @@ IDENTIFICATION DIVISION.
 
        01  PROFILE-EXISTS OCCURS 5 TIMES PIC X VALUE "N".
 
+    *> Week 3: Allows profile display to vary header/footer by context
+    01  PROFILE-DISPLAY-HEADER      PIC X(40) VALUE SPACES.
+    01  PROFILE-DISPLAY-FOOTER      PIC X(40) VALUE SPACES.
+    01  TEMP-FULL-NAME              PIC X(100) VALUE SPACES.
+
        PROCEDURE DIVISION.
        MAIN.
            *> Open input/output files at the start so all ACCEPTs are replaced with READs
@@ -377,6 +382,11 @@ IDENTIFICATION DIVISION.
                    AT END
                        SET EOF-YES TO TRUE
                    NOT AT END
+                       *> Defensive action:convert any LOW-VALUES (NUL bytes) to spaces 
+                           *> accounts.dat file was saving NUL bytes after login data was created.
+                           *> This prevented new login info from working
+                       *> so TRIM/UNSTRING behave correctly even if file was written by root/container.
+                       INSPECT ACCOUNTS-REC REPLACING ALL LOW-VALUES BY SPACE
                        PERFORM PARSE-ACCOUNT-LINE
                END-READ
            END-PERFORM
@@ -395,6 +405,7 @@ IDENTIFICATION DIVISION.
        SAVE-ACCOUNTS.
            OPEN OUTPUT ACCOUNTS-FILE
            PERFORM VARYING I FROM 1 BY 1 UNTIL I > ACCOUNT-COUNT
+               MOVE SPACES TO ACCOUNTS-REC
                STRING
                    FUNCTION TRIM(STORED-USERNAME(I)) *> Trim blank spaces Username
                    "|"
@@ -751,7 +762,11 @@ IDENTIFICATION DIVISION.
            END-IF
 
            *> Display profile header
-           MOVE "--- User Profile ---" TO LINE-TEXT
+           IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-DISPLAY-HEADER)) > 0
+               MOVE FUNCTION TRIM(PROFILE-DISPLAY-HEADER) TO LINE-TEXT
+           ELSE
+               MOVE "--- User Profile ---" TO LINE-TEXT
+           END-IF
            PERFORM PRINT-LINE
 
            *> Display name
@@ -904,16 +919,28 @@ IDENTIFICATION DIVISION.
            END-IF
 
            *> Display footer
-           MOVE "--------------------" TO LINE-TEXT
+           IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-DISPLAY-FOOTER)) > 0
+               MOVE FUNCTION TRIM(PROFILE-DISPLAY-FOOTER) TO LINE-TEXT
+           ELSE
+               MOVE "--------------------" TO LINE-TEXT
+           END-IF
            PERFORM PRINT-LINE.
 
        *> Week 2: View My Profile (now uses the shared DISPLAY-USER-PROFILE)
        VIEW-MY-PROFILE.
            *> Set the display index to current user
            MOVE CURRENT-USER-INDEX TO DISPLAY-USER-INDEX
+
+           *> Week 3: match sample output header for self profile
+           MOVE "--- Your Profile ---" TO PROFILE-DISPLAY-HEADER
+           MOVE "--------------------" TO PROFILE-DISPLAY-FOOTER
            
            *> Call the shared display routine
            PERFORM DISPLAY-USER-PROFILE
+
+           *> Clear header/footer so other screens keep defaults
+           MOVE SPACES TO PROFILE-DISPLAY-HEADER
+           MOVE SPACES TO PROFILE-DISPLAY-FOOTER
            
            *> Add blank line after display
            MOVE " " TO LINE-TEXT
@@ -930,37 +957,38 @@ IDENTIFICATION DIVISION.
            SET USER-NOT-FOUND TO TRUE
 
            *> Prompt for full name
-           MOVE "Enter the full name (First Last): " TO LINE-TEXT
+           MOVE "Enter the full name of the person you are looking for:" TO LINE-TEXT
            PERFORM PRINT-LINE
 
            *> Read the search name from input
            PERFORM READ-NEXT-INPUT
            MOVE FUNCTION TRIM(INPUT-REC) TO SEARCH-FULL-NAME
 
-           *> Split the full name into first and last
+           *> Split the full name into first and last (existing helper)
            PERFORM SPLIT-FULL-NAME
 
-           *> If splitting failed (no space found), report error
-           IF SPACE-POS = 0
-               MOVE "Invalid name format. Please enter 'First Last'." TO LINE-TEXT
-               PERFORM PRINT-LINE
-               MOVE " " TO LINE-TEXT
-               PERFORM PRINT-LINE
-               EXIT PARAGRAPH
-           END-IF
-
            *> Loop through all accounts and compare names
-           PERFORM VARYING I FROM 1 BY 1 UNTIL I > ACCOUNT-COUNT
-               IF USER-NOT-FOUND
-                   PERFORM COMPARE-NAMES
-                   IF USER-FOUND
-                       *> Found a match - set display index and show profile
-                       MOVE I TO DISPLAY-USER-INDEX
-                       PERFORM DISPLAY-USER-PROFILE
-                       EXIT PERFORM
+           IF SPACE-POS > 0
+               PERFORM VARYING I FROM 1 BY 1 UNTIL I > ACCOUNT-COUNT
+                   IF USER-NOT-FOUND
+                       PERFORM COMPARE-NAMES
+                       IF USER-FOUND
+                           *> Found a match - set display index and show profile
+                           MOVE I TO DISPLAY-USER-INDEX
+
+                           *> Week 3: match sample output header for found user
+                           MOVE "--- Found User Profile ---" TO PROFILE-DISPLAY-HEADER
+                           MOVE "-------------------------" TO PROFILE-DISPLAY-FOOTER
+                           PERFORM DISPLAY-USER-PROFILE
+
+                           *> Clear header/footer after use
+                           MOVE SPACES TO PROFILE-DISPLAY-HEADER
+                           MOVE SPACES TO PROFILE-DISPLAY-FOOTER
+                           EXIT PERFORM
+                       END-IF
                    END-IF
-               END-IF
-           END-PERFORM
+               END-PERFORM
+           END-IF
 
            *> If we finished the loop without finding anyone
            IF USER-NOT-FOUND
@@ -1003,11 +1031,10 @@ IDENTIFICATION DIVISION.
            *> Only compare if this user has a profile
            IF PROFILE-EXISTS(I) = "Y"
                *> Exact match: both first and last must match
-               *> Using UPPER-CASE for case-insensitive comparison
-               IF FUNCTION UPPER-CASE(FUNCTION TRIM(SEARCH-FIRST-NAME))
-                  = FUNCTION UPPER-CASE(FUNCTION TRIM(PROFILE-FIRST-NAME(I)))
-                  AND FUNCTION UPPER-CASE(FUNCTION TRIM(SEARCH-LAST-NAME))
-                  = FUNCTION UPPER-CASE(FUNCTION TRIM(PROFILE-LAST-NAME(I)))
+               IF FUNCTION TRIM(SEARCH-FIRST-NAME)
+                  = FUNCTION TRIM(PROFILE-FIRST-NAME(I))
+                  AND FUNCTION TRIM(SEARCH-LAST-NAME)
+                  = FUNCTION TRIM(PROFILE-LAST-NAME(I))
                    SET USER-FOUND TO TRUE
                END-IF
            END-IF.
