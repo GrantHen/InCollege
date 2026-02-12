@@ -1,4 +1,4 @@
-IDENTIFICATION DIVISION.
+       IDENTIFICATION DIVISION.
        PROGRAM-ID. InCollege.
 
        ENVIRONMENT DIVISION.
@@ -632,10 +632,9 @@ IDENTIFICATION DIVISION.
                    WHEN 5
                        PERFORM LEARN-NEW-SKILL
                    WHEN 9
-                       MOVE "--- END_OF_PROGRAM_EXECUTION ---" TO LINE-TEXT
-                       PERFORM PRINT-LINE
                        MOVE " " TO LINE-TEXT
                        PERFORM PRINT-LINE
+                       PERFORM START-SCREEN
 
                        CLOSE INPUT-FILE
                        CLOSE OUTPUT-FILE
