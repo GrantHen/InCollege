@@ -632,9 +632,8 @@
                    WHEN 5
                        PERFORM LEARN-NEW-SKILL
                    WHEN 9
-                       MOVE " " TO LINE-TEXT
-                       PERFORM PRINT-LINE
-                       PERFORM START-SCREEN
+                       SET NOT-LOGGED-IN TO TRUE
+                       EXIT PERFORM
 
                    WHEN OTHER
                        MOVE "Invalid choice. Try again." TO LINE-TEXT
