@@ -1,0 +1,85 @@
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+user11
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+1
+Please enter your username:
+user11
+Please enter your password:
+Password1!
+You have successfully logged in.
+
+Welcome, user11!
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+1
+--- Create/Edit Profile ---
+Enter First Name:
+John
+Enter Last Name:
+Doe
+Enter University/College Attended:
+USF
+Enter Major:
+CS
+Enter Graduation Year (YYYY):
+2025
+Enter About Me (optional, max 200 chars, enter blank line to skip):
+
+Experience #1 - Title (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+Education #1 - Degree (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+Profile saved successfully!
+1. Return to Main Menu
+2. Edit Profile Again
+Enter your choice:
+1
+
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+4
+Enter the full name of the person you are looking for:
+john doe
+No one by that name could be found.
+
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+9
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+9
+--- END_OF_PROGRAM_EXECUTION ---
+

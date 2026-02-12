@@ -1,0 +1,114 @@
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+2
+Please enter your username:
+user3
+Please enter your password:
+Password1!
+Account created successfully!
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+1
+Please enter your username:
+user3
+Please enter your password:
+Password1!
+You have successfully logged in.
+
+Welcome, user3!
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+1
+--- Create/Edit Profile ---
+Enter First Name:
+Jane
+Enter Last Name:
+Smith
+Enter University/College Attended:
+USF
+Enter Major:
+Engineering
+Enter Graduation Year (YYYY):
+2026
+Enter About Me (optional, max 200 chars, enter blank line to skip):
+About me
+Experience #1 - Title (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+T1
+Experience #1 - Company/Organization (blank keeps current, 'DONE' to finish):
+C1
+Experience #1 - Dates (e.g., Summer 2024) (blank keeps current, 'DONE' to finish):
+D1
+Experience #1 - Description (optional, blank keeps current, 'DONE' to finish):
+Desc1
+Experience #2 - Title (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+Education #1 - Degree (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+Deg1
+Education #1 - University/College (blank keeps current, 'DONE' to finish):
+Uni1
+Education #1 - Years Attended (e.g., 2023-2025) (blank keeps current, 'DONE' to finish):
+Y1
+Education #2 - Degree (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+Profile saved successfully!
+1. Return to Main Menu
+2. Edit Profile Again
+Enter your choice:
+1
+
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+4
+Enter the full name of the person you are looking for:
+Jane Smith
+--- Found User Profile ---
+Name: Jane Smith
+University: USF
+Major: Engineering
+Graduation Year: 2026
+About Me: About me
+Experience:
+Title: T1
+Company: C1
+Dates: D1
+Description: Desc1
+Education:
+Degree: Deg1
+University: Uni1
+Years: Y1
+-------------------------
+
+1. Create/Edit My Profile
+2. View My Profile
+3. Search for a job
+4. Find someone you know
+5. Learn a New Skill
+9. Logout
+Enter your choice:
+9
+
+Welcome to InCollege!
+1. Log In
+2. Create New Account
+9. Exit
+Enter your choice:
+9
+--- END_OF_PROGRAM_EXECUTION ---
+
