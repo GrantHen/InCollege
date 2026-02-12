@@ -128,7 +128,7 @@ IDENTIFICATION DIVISION.
        01  EDU-IDX                    PIC 9 VALUE 1.
 
        *> Controls whether to echo user input into output transcript
-       01  ECHO-USER-INPUT            PIC X VALUE "N".
+       01  ECHO-USER-INPUT            PIC X VALUE "Y".
            88  ECHO-ON                VALUE "Y".
            88  ECHO-OFF               VALUE "N".
 
@@ -211,7 +211,7 @@ IDENTIFICATION DIVISION.
        GET-MENU-CHOICE.
            PERFORM READ-NEXT-INPUT
            IF INPUT-EOF-YES
-               MOVE 9 TO MENU-CHOICE
+               MOVE 0 TO MENU-CHOICE
            ELSE
                IF INPUT-REC(1:1) >= "0" AND INPUT-REC(1:1) <= "9"
                    COMPUTE MENU-CHOICE = FUNCTION NUMVAL(INPUT-REC(1:1))
@@ -653,7 +653,7 @@ IDENTIFICATION DIVISION.
        GET-POST-CHOICE.
            PERFORM READ-NEXT-INPUT
            IF INPUT-EOF-YES
-               MOVE 9 TO POST-CHOICE
+               MOVE 0 TO POST-CHOICE
            ELSE
                IF INPUT-REC(1:1) >= "0" AND INPUT-REC(1:1) <= "9"
                    COMPUTE POST-CHOICE = FUNCTION NUMVAL(INPUT-REC(1:1))
