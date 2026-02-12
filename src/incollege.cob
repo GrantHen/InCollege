@@ -636,10 +636,6 @@
                        PERFORM PRINT-LINE
                        PERFORM START-SCREEN
 
-                       CLOSE INPUT-FILE
-                       CLOSE OUTPUT-FILE
-                       STOP RUN
-
                    WHEN OTHER
                        MOVE "Invalid choice. Try again." TO LINE-TEXT
                        PERFORM PRINT-LINE
