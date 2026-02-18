@@ -1,0 +1,28 @@
+2
+alice
+Password1!
+2
+bob
+Password1!
+1
+bob
+Password1!
+1
+Bob
+Baker
+West Coast Uni
+Business
+2027
+
+DONE
+DONE
+1
+9
+1
+alice
+Password1!
+4
+Bob Baker
+1
+9
+9
