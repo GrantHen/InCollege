@@ -1,8 +1,0 @@
-services:
-  app:
-    build: .
-    command: ["bash", "-lc", "./incollege || true"]
-
-  tester:
-    build: .
-    command: ["bash", "-lc", "./tests/run_all.sh"]
