@@ -231,6 +231,25 @@ IDENTIFICATION DIVISION.
            88  HAS-PENDING            VALUE "Y".
            88  NO-PENDING             VALUE "N".
 
+       *> ============================================================
+       *> WEEK 5: NEW VARIABLES FOR ACCEPT/REJECT AND VIEW NETWORK
+       *> ============================================================
+       01  ACCEPT-REJECT-CHOICE       PIC X VALUE "N".
+           88  CHOICE-ACCEPT          VALUE "A".
+           88  CHOICE-REJECT          VALUE "R".
+           88  CHOICE-INVALID         VALUE "N".
+
+       01  REQUEST-INDEX              PIC 99 VALUE 0.
+       01  REQUESTS-PROCESSED         PIC 99 VALUE 0.
+       01  REQUEST-SENDER-NAME        PIC X(60).
+       01  CONNECTION-ESTABLISHED     PIC X VALUE "N".
+           88  CONN-SUCCESS           VALUE "Y".
+           88  CONN-NOT-CREATED       VALUE "N".
+
+       01  MY-NETWORK-COUNT           PIC 99 VALUE 0.
+       01  NETWORK-DISPLAY-INDEX      PIC 99 VALUE 0.
+       01  NETWORK-USER-INDEX         PIC 99 VALUE 0.
+
        PROCEDURE DIVISION.
        MAIN.
            *> Open input/output files at the start so all ACCEPTs are replaced with READs
