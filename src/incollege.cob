@@ -1,4 +1,4 @@
-IDENTIFICATION DIVISION.
+       IDENTIFICATION DIVISION.
        PROGRAM-ID. InCollege.
 
        ENVIRONMENT DIVISION.
@@ -155,7 +155,7 @@ IDENTIFICATION DIVISION.
            88  USER-NOT-FOUND         VALUE "N".
        01  DISPLAY-USER-INDEX         PIC 9 VALUE 0.
        01  SPACE-POS                  PIC 99 VALUE 0.
-       01  NAME-SCAN-IDX             PIC 99 VALUE 1.
+       01  NAME-SCAN-IDX              PIC 99 VALUE 1.
 
        01  PROFILE-TABLE.
            05  PROFILE-ENTRY OCCURS 5 TIMES.
@@ -231,24 +231,14 @@ IDENTIFICATION DIVISION.
            88  HAS-PENDING            VALUE "Y".
            88  NO-PENDING             VALUE "N".
 
-       *> ============================================================
-       *> WEEK 5: NEW VARIABLES FOR ACCEPT/REJECT AND VIEW NETWORK
-       *> ============================================================
-       01  ACCEPT-REJECT-CHOICE       PIC X VALUE "N".
-           88  CHOICE-ACCEPT          VALUE "A".
-           88  CHOICE-REJECT          VALUE "R".
-           88  CHOICE-INVALID         VALUE "N".
+       *> EPIC #5:
+       *> Stores the username on the other side of a request/connection
+       01  CONNECTED-USERNAME          PIC X(20) VALUE SPACES.
 
-       01  REQUEST-INDEX              PIC 99 VALUE 0.
-       01  REQUESTS-PROCESSED         PIC 99 VALUE 0.
-       01  REQUEST-SENDER-NAME        PIC X(60).
-       01  CONNECTION-ESTABLISHED     PIC X VALUE "N".
-           88  CONN-SUCCESS           VALUE "Y".
-           88  CONN-NOT-CREATED       VALUE "N".
-
-       01  MY-NETWORK-COUNT           PIC 99 VALUE 0.
-       01  NETWORK-DISPLAY-INDEX      PIC 99 VALUE 0.
-       01  NETWORK-USER-INDEX         PIC 99 VALUE 0.
+       *> used to know if the user has at least one connection when viewing network
+       01  NETWORK-FOUND               PIC X VALUE "N".
+           88  HAS-CONNECTIONS         VALUE "Y".
+           88  NO-CONNECTIONS          VALUE "N".
 
        PROCEDURE DIVISION.
        MAIN.
@@ -850,43 +840,7 @@ IDENTIFICATION DIVISION.
                PERFORM PRINT-LINE
            END-IF.
 
-      *> ============================================================
-      *> WEEK 4: View My Pending Connection Requests
-      *> Shows all pending requests where the current user is
-      *> the recipient
-      *> ============================================================
-       VIEW-PENDING-REQUESTS.
-           MOVE "--- Pending Connection Requests ---" TO LINE-TEXT
-           PERFORM PRINT-LINE
-
-           SET NO-PENDING TO TRUE
-           PERFORM VARYING J FROM 1 BY 1
-                   UNTIL J > REQUEST-COUNT
-               IF FUNCTION UPPER-CASE(FUNCTION TRIM(
-                   REQ-RECIPIENT(J)))
-                 = FUNCTION UPPER-CASE(FUNCTION TRIM(
-                   STORED-USERNAME(CURRENT-USER-INDEX)))
-                   SET HAS-PENDING TO TRUE
-                   MOVE SPACES TO LINE-TEXT
-                   STRING
-                       "Request from: "
-                       FUNCTION TRIM(REQ-SENDER(J))
-                       DELIMITED BY SIZE
-                       INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
-               END-IF
-           END-PERFORM
-
-           IF NO-PENDING
-               MOVE "No pending connection requests." TO LINE-TEXT
-               PERFORM PRINT-LINE
-           END-IF
-
-           MOVE "-----------------------------------" TO LINE-TEXT
-           PERFORM PRINT-LINE
-           MOVE " " TO LINE-TEXT
-           PERFORM PRINT-LINE.
+       *> VIEW-PENDING-REQUESTS replaced by MANAGE-PENDING-REQUESTS (incollege_ViewNetwork.cob), which allows accepting/denying
 
        LOGIN.
            *> Unlimited attempts required (we keep looping until correct login)
@@ -958,8 +912,9 @@ IDENTIFICATION DIVISION.
                PERFORM PRINT-LINE
                MOVE "5. Learn a New Skill" TO LINE-TEXT
                PERFORM PRINT-LINE
-               MOVE "6. View My Pending Connection Requests"
-                   TO LINE-TEXT
+               MOVE "6. View My Pending Connection Requests" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "7. View My Network" TO LINE-TEXT
                PERFORM PRINT-LINE
 
                *> logout terminates
@@ -986,7 +941,10 @@ IDENTIFICATION DIVISION.
                    WHEN 5
                        PERFORM LEARN-NEW-SKILL
                    WHEN 6
-                       PERFORM VIEW-PENDING-REQUESTS
+                       PERFORM MANAGE-PENDING-REQUESTS    *> VIEW-PENDING-REQUESTS
+                   WHEN 7
+                       PERFORM VIEW-MY-NETWORK
+
                    WHEN 9
                        SET NOT-LOGGED-IN TO TRUE
                        EXIT PERFORM
@@ -1847,3 +1805,5 @@ IDENTIFICATION DIVISION.
                    MOVE 0 TO SKILL-CHOICE
                END-IF
            END-IF.
+
+       COPY "incollege_ViewNetwork.cob".
