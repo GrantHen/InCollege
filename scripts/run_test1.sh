@@ -20,7 +20,7 @@ output="$root/out/InCollege-Output.txt"
 accounts="$root/data/accounts.dat"
 
 # Compile the COBOL program once before running tests
-cobc -x -free -o "$exe" "$root/src/incollege.cob"
+cobc -x -free -I "$root/src" -o "$exe" "$root/src/incollege.cob"
 
 fail=0
 
