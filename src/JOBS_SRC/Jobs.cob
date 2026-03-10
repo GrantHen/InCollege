@@ -1,8 +1,8 @@
-       *> Week 6 slice owned by this developer:
+       *> Week 6
        *> - submenu
        *> - post job flow
        *> - file persistence
-       *> TODO teammate: expand browse jobs and any richer validation/polish.
+       *> TODO expand browse jobs and any richer validation/polish.
        JOB-SEARCH-INTERNSHIP-MENU.
            MOVE 0 TO JOB-MENU-CHOICE
            PERFORM UNTIL JOB-MENU-CHOICE = 3

@@ -1,4 +1,4 @@
-       *> Week 6: job posting storage for the assigned half only.
+       *> Week 6: job posting storage
        01  JOBS-FILE-STATUS           PIC XX VALUE "00".
        01  MAX-JOBS                   PIC 99 VALUE 25.
        01  JOB-COUNT                  PIC 99 VALUE 0.
