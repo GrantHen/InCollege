@@ -184,10 +184,10 @@
 
        01  PROFILE-EXISTS OCCURS 5 TIMES PIC X VALUE "N".
 
-    *> Week 3: Allows profile display to vary header/footer by context
-    01  PROFILE-DISPLAY-HEADER      PIC X(40) VALUE SPACES.
-    01  PROFILE-DISPLAY-FOOTER      PIC X(40) VALUE SPACES.
-    01  TEMP-FULL-NAME              PIC X(100) VALUE SPACES.
+       *> Week 3: Allows profile display to vary header/footer by context
+       01  PROFILE-DISPLAY-HEADER      PIC X(100) VALUE SPACES.
+       01  PROFILE-DISPLAY-FOOTER      PIC X(100) VALUE SPACES.
+       01  TEMP-FULL-NAME              PIC X(100) VALUE SPACES.
 
       *> ============================================================
       *> WEEK 4: Connection request data structures
@@ -275,4 +275,4 @@
 
        COPY "JOBS_SRC/Jobs.cob".
        COPY "BROWSEJOBS_SRC/BrowseJobs.cob".
-       COPY "incollege_ViewNetwork.cob".
+       COPY "VIEWNET_SRC/ViewNetwork.cob".

@@ -11,6 +11,8 @@
            SET USER-NOT-FOUND TO TRUE
 
            *> Prompt for full name
+           MOVE "-------------------------------------------------------" TO LINE-TEXT
+           PERFORM PRINT-LINE
            MOVE "Enter the full name of the person you are looking for:" TO LINE-TEXT
            PERFORM PRINT-LINE
 
@@ -31,13 +33,15 @@
                            MOVE I TO DISPLAY-USER-INDEX
 
                            *> Week 3: match sample output header for found user
-                           MOVE "--- Found User Profile ---" TO PROFILE-DISPLAY-HEADER
-                           MOVE "-------------------------" TO PROFILE-DISPLAY-FOOTER
+                           MOVE "----------------- Found User Profile ------------------" TO LINE-TEXT
+                           MOVE "-------------------------------------------------------" TO LINE-TEXT
                            PERFORM DISPLAY-USER-PROFILE
-
-                           *> Clear header/footer after use
                            MOVE SPACES TO PROFILE-DISPLAY-HEADER
                            MOVE SPACES TO PROFILE-DISPLAY-FOOTER
+
+                           *> Clear header/footer after use
+                           MOVE SPACES TO LINE-TEXT
+                           MOVE SPACES TO LINE-TEXT
 
                            *> WEEK 4: Offer to send connection request
                            *> Only if viewing someone else's profile
@@ -55,6 +59,7 @@
            *> If we finished the loop without finding anyone
            IF USER-NOT-FOUND
                MOVE "No one by that name could be found." TO LINE-TEXT
+               MOVE "-------------------------------------------------------" TO LINE-TEXT
                PERFORM PRINT-LINE
            END-IF
 
@@ -74,6 +79,8 @@
                PERFORM PRINT-LINE
                MOVE "2. Return to Main Menu" TO LINE-TEXT
                PERFORM PRINT-LINE
+               MOVE "--------------------------" TO LINE-TEXT
+               PERFORM PRINT-LINE
                MOVE "Enter your choice: " TO LINE-TEXT
                PERFORM PRINT-LINE
 
@@ -85,10 +92,17 @@
                        AND INPUT-REC(1:1) <= "2"
                        COMPUTE SEND-REQ-CHOICE =
                            FUNCTION NUMVAL(INPUT-REC(1:1))
+                          
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
                    ELSE
                        MOVE "Invalid choice. Try again."
                            TO LINE-TEXT
                        PERFORM PRINT-LINE
+
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                    END-IF
                END-IF
            END-PERFORM

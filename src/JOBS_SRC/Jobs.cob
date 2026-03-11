@@ -2,17 +2,19 @@
        *> - submenu
        *> - post job flow
        *> - file persistence
-       *> TODO expand browse jobs and any richer validation/polish.
+       *> TODO any richer validation/polish.
        JOB-SEARCH-INTERNSHIP-MENU.
            MOVE 0 TO JOB-MENU-CHOICE
            PERFORM UNTIL JOB-MENU-CHOICE = 3
-               MOVE "--- Job Search / Internship ---" TO LINE-TEXT
+               MOVE "------- Job Search / Internship -------" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "1. Post a Job/Internship" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "2. Browse Jobs/Internships" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "3. Back to Main Menu" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "---------------------------------------" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "Enter your choice: " TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -21,10 +23,19 @@
 
                EVALUATE JOB-MENU-CHOICE
                    WHEN 1
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        PERFORM POST-JOB-INTERNSHIP
                    WHEN 2
-                       PERFORM BROWSE-JOBS-UNDER-CONSTRUCTION
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                       
+                       PERFORM BROWSE-JOBS
                    WHEN 3
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        CONTINUE
                    WHEN OTHER
                        MOVE "Invalid choice. Try again." TO LINE-TEXT
@@ -54,7 +65,7 @@
            MOVE SPACES TO JOB-LOCATION-IN
            MOVE "NONE" TO JOB-SALARY-IN
 
-           MOVE "--- Post a Job/Internship ---" TO LINE-TEXT
+           MOVE "------- Post a Job/Internship -------" TO LINE-TEXT
            PERFORM PRINT-LINE
 
            PERFORM GET-JOB-TITLE

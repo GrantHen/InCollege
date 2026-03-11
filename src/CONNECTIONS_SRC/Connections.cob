@@ -218,7 +218,7 @@
 
                MOVE SPACES TO LINE-TEXT
                STRING
-                   "Connection request sent to "
+                   "* Connection request sent to: "
                    FUNCTION TRIM(STORED-USERNAME(
                        DISPLAY-USER-INDEX))
                    DELIMITED BY SIZE
@@ -226,7 +226,13 @@
                END-STRING
                PERFORM PRINT-LINE
            ELSE
-               MOVE "Maximum pending requests reached." TO LINE-TEXT
+               MOVE "**************************************" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "*  Maximum pending requests reached  *" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "**************************************" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE " " TO LINE-TEXT
                PERFORM PRINT-LINE
            END-IF.
 

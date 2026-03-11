@@ -1,6 +1,11 @@
        START-SCREEN.
            PERFORM UNTIL MENU-CHOICE = 9
+
+               *> Display main menu
                MOVE "Welcome to InCollege!" TO LINE-TEXT
+               PERFORM PRINT-LINE
+
+               MOVE "----------------------" TO LINE-TEXT
                PERFORM PRINT-LINE
 
                MOVE "1. Log In" TO LINE-TEXT
@@ -12,10 +17,16 @@
                MOVE "9. Exit" TO LINE-TEXT
                PERFORM PRINT-LINE
 
+               MOVE "----------------------" TO LINE-TEXT
+               PERFORM PRINT-LINE
+
                MOVE "Enter your choice: " TO LINE-TEXT
                PERFORM PRINT-LINE
 
                PERFORM GET-MENU-CHOICE
+
+               MOVE " " TO LINE-TEXT
+               PERFORM PRINT-LINE
 
                EVALUATE MENU-CHOICE
                    WHEN 1
@@ -30,8 +41,6 @@
                        PERFORM PRINT-LINE
                END-EVALUATE
 
-               MOVE " " TO LINE-TEXT
-               PERFORM PRINT-LINE
            END-PERFORM.
 
        LOGIN.
@@ -40,10 +49,15 @@
            MOVE 0 TO CURRENT-USER-INDEX
 
            PERFORM UNTIL LOGIN-YES
+               MOVE "---------------------------" TO LINE-TEXT
+               PERFORM PRINT-LINE
                MOVE "Please enter your username: " TO LINE-TEXT
                PERFORM PRINT-LINE
                PERFORM READ-NEXT-INPUT
                MOVE FUNCTION TRIM(INPUT-REC) TO USERNAME-IN
+
+               MOVE " " TO LINE-TEXT
+               PERFORM PRINT-LINE
 
                MOVE "Please enter your password: " TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -53,25 +67,25 @@
                PERFORM CHECK-LOGIN
 
                IF LOGIN-YES
-                   MOVE "You have successfully logged in." TO LINE-TEXT
+                   MOVE "*************************************" TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   MOVE "*  You have successfully logged in  *" TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   MOVE "*************************************" TO LINE-TEXT
                    PERFORM PRINT-LINE
                    MOVE " " TO LINE-TEXT
                    PERFORM PRINT-LINE
 
-                   STRING "Welcome, "
-                          FUNCTION TRIM(USERNAME-IN)
-                          "!"
-                          DELIMITED BY SIZE
-                          INTO LINE-TEXT
-                   END-STRING
-                   PERFORM PRINT-LINE
+
+
 
                    SET IS-LOGGED-IN TO TRUE
                    PERFORM POST-LOGIN-MENU
                ELSE
-                   MOVE "Incorrect username/password, please try again" TO LINE-TEXT
-                   PERFORM PRINT-LINE
                    MOVE " " TO LINE-TEXT
+                   PERFORM PRINT-LINE
+
+                   MOVE "Incorrect username/password, please try again" TO LINE-TEXT
                    PERFORM PRINT-LINE
                END-IF
            END-PERFORM.
@@ -93,6 +107,18 @@
        POST-LOGIN-MENU.
            MOVE 0 TO POST-CHOICE
            PERFORM UNTIL POST-CHOICE = 9
+               MOVE SPACES TO LINE-TEXT
+               STRING "Welcome, "
+                      FUNCTION TRIM(STORED-USERNAME(CURRENT-USER-INDEX))
+                      "!"
+                      DELIMITED BY SIZE
+                      INTO LINE-TEXT
+               END-STRING
+               PERFORM PRINT-LINE
+
+               MOVE "---------------------------------------" TO LINE-TEXT
+               PERFORM PRINT-LINE
+
                *> menu shows Create/Edit + View first
                MOVE "1. Create/Edit My Profile" TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -112,6 +138,8 @@
                *> logout terminates
                MOVE "9. Logout" TO LINE-TEXT
                PERFORM PRINT-LINE
+               MOVE "---------------------------------------" TO LINE-TEXT
+               PERFORM PRINT-LINE
 
                MOVE "Enter your choice: " TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -120,27 +148,52 @@
 
                EVALUATE POST-CHOICE
                    WHEN 1
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                       
                        PERFORM CREATE-EDIT-PROFILE
                    WHEN 2
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        PERFORM VIEW-MY-PROFILE
                    WHEN 3
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        PERFORM JOB-SEARCH-INTERNSHIP-MENU
                    WHEN 4
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        PERFORM SEARCH-USER-BY-NAME
                    WHEN 5
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        PERFORM LEARN-NEW-SKILL
                    WHEN 6
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        PERFORM MANAGE-PENDING-REQUESTS
                    WHEN 7
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+                       
                        PERFORM VIEW-MY-NETWORK
-
                    WHEN 9
                        SET NOT-LOGGED-IN TO TRUE
+
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
                        EXIT PERFORM
 
                    WHEN OTHER
                        MOVE "Invalid choice. Try again." TO LINE-TEXT
                        PERFORM PRINT-LINE
+
                        MOVE " " TO LINE-TEXT
                        PERFORM PRINT-LINE
                END-EVALUATE

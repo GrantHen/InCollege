@@ -10,15 +10,22 @@
            SET USERNAME-NOT-VALID TO TRUE
            SET PASSWORD-NOT-VALID TO TRUE
 
+           *> Get a valid username
            PERFORM UNTIL USERNAME-VALID
-               MOVE "Please enter your username: " TO LINE-TEXT
+               MOVE "---------------------------" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "Please enter your username:" TO LINE-TEXT
                PERFORM PRINT-LINE
 
                PERFORM READ-NEXT-INPUT
                MOVE FUNCTION TRIM(INPUT-REC) TO USERNAME-IN
 
                PERFORM CHECK-USERNAME-UNIQUE
+
                IF DUPLICATE-YES
+                   MOVE " " TO LINE-TEXT
+                   PERFORM PRINT-LINE
+
                    MOVE "That username is already taken. Please try again." TO LINE-TEXT
                    PERFORM PRINT-LINE
                ELSE
@@ -26,14 +33,22 @@
                END-IF
            END-PERFORM
 
+           MOVE " " TO LINE-TEXT
+           PERFORM PRINT-LINE
+
+           *> Get a valid password
            PERFORM UNTIL PASSWORD-VALID
-               MOVE "Please enter your password: " TO LINE-TEXT
+               MOVE "Please enter your password:" TO LINE-TEXT
                PERFORM PRINT-LINE
 
                PERFORM READ-NEXT-INPUT
                MOVE FUNCTION TRIM(INPUT-REC) TO PASSWORD-IN
 
                PERFORM VALIDATE-PASSWORD
+
+           MOVE "---------------------------" TO LINE-TEXT
+           PERFORM PRINT-LINE
+
                IF PASSWORD-NOT-VALID
                    MOVE "Password must be 8-12 characters and include:" TO LINE-TEXT
                    PERFORM PRINT-LINE
@@ -41,6 +56,9 @@
                    PERFORM PRINT-LINE
                    MOVE "Please try again." TO LINE-TEXT
                    PERFORM PRINT-LINE
+                   MOVE " " TO LINE-TEXT
+                   PERFORM PRINT-LINE
+
                END-IF
            END-PERFORM
 
@@ -51,7 +69,13 @@
 
            PERFORM SAVE-ACCOUNTS
 
-           MOVE "Account created successfully!" TO LINE-TEXT
+           MOVE "***********************************" TO LINE-TEXT
+           PERFORM PRINT-LINE
+           MOVE "*  Account created successfully!  *" TO LINE-TEXT
+           PERFORM PRINT-LINE
+           MOVE "***********************************" TO LINE-TEXT
+           PERFORM PRINT-LINE
+           MOVE " " TO LINE-TEXT
            PERFORM PRINT-LINE.
 
        CHECK-USERNAME-UNIQUE.

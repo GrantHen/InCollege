@@ -122,7 +122,7 @@
        CREATE-EDIT-PROFILE.
            PERFORM UNTIL 1 = 0
                *> Header matches sample output
-               MOVE "--- Create/Edit Profile ---" TO LINE-TEXT
+               MOVE "----------- Create/Edit Profile -----------" TO LINE-TEXT
                PERFORM PRINT-LINE
 
                *> Mark that this user has a profile now (so SAVE-PROFILES will write it)
@@ -163,15 +163,23 @@
                *> Save to profiles.dat
                PERFORM SAVE-PROFILES
 
-               MOVE "Profile saved successfully!" TO LINE-TEXT
+               MOVE "***********************************" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "*   Profile saved successfully!   *" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "***********************************" TO LINE-TEXT
                PERFORM PRINT-LINE
 
                *> Present explicit option to return to main menu after saving
                MOVE 0 TO POST-SAVE-CHOICE
                PERFORM UNTIL POST-SAVE-CHOICE = 1 OR POST-SAVE-CHOICE = 2
+                   MOVE "----------------------" TO LINE-TEXT
+                   PERFORM PRINT-LINE
                    MOVE "1. Return to Main Menu" TO LINE-TEXT
                    PERFORM PRINT-LINE
                    MOVE "2. Edit Profile Again" TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   MOVE "----------------------" TO LINE-TEXT
                    PERFORM PRINT-LINE
                    MOVE "Enter your choice: " TO LINE-TEXT
                    PERFORM PRINT-LINE
@@ -221,7 +229,9 @@
            IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-DISPLAY-HEADER)) > 0
                MOVE FUNCTION TRIM(PROFILE-DISPLAY-HEADER) TO LINE-TEXT
            ELSE
-               MOVE "--- User Profile ---" TO LINE-TEXT
+               MOVE " " TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "----| User Profile |----" TO LINE-TEXT
            END-IF
            PERFORM PRINT-LINE
 
@@ -378,7 +388,7 @@
            IF FUNCTION LENGTH(FUNCTION TRIM(PROFILE-DISPLAY-FOOTER)) > 0
                MOVE FUNCTION TRIM(PROFILE-DISPLAY-FOOTER) TO LINE-TEXT
            ELSE
-               MOVE "--------------------" TO LINE-TEXT
+               MOVE "-------------------------------------------------------" TO LINE-TEXT
            END-IF
            PERFORM PRINT-LINE.
 
@@ -387,9 +397,9 @@
            *> Set the display index to current user
            MOVE CURRENT-USER-INDEX TO DISPLAY-USER-INDEX
 
-           *> Week 3: match sample output header for self profile
-           MOVE "--- Your Profile ---" TO PROFILE-DISPLAY-HEADER
-           MOVE "--------------------" TO PROFILE-DISPLAY-FOOTER
+           *> Week 3: match sample output header for self profileclear
+           MOVE "-------------------- Your Profile ---------------------" TO PROFILE-DISPLAY-HEADER
+           MOVE "-------------------------------------------------------" TO PROFILE-DISPLAY-FOOTER
            
            *> Call the shared display routine
            PERFORM DISPLAY-USER-PROFILE
