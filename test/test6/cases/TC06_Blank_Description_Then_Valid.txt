@@ -1,0 +1,17 @@
+2
+W6User06
+Password1!
+1
+W6User06
+Password1!
+3
+1
+QA Analyst
+
+Validate application features and document defects.
+InCollege QA
+Remote
+NONE
+3
+9
+9

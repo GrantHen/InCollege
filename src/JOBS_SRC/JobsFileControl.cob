@@ -1,0 +1,3 @@
+           SELECT JOBS-FILE ASSIGN TO "data/jobs.dat"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS JOBS-FILE-STATUS.

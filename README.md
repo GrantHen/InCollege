@@ -9,7 +9,7 @@ Run the container and mount the project folder:
 ----------- Compile Program ---------------------------------------------------------------------------------------------------------------------------
 
 From the src folder, compile the program:
-***cobc -x -free incollege.cob***
+***cobc -x -free -I . incollege.cob***
 
 Then return to the project root:
 ***cd ..***

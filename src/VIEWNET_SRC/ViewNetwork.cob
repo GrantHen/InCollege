@@ -1,6 +1,6 @@
        MANAGE-PENDING-REQUESTS.
 
-           MOVE "---- Pending Connection Requests ----" TO LINE-TEXT
+           MOVE "----- Pending Connection Requests -----" TO LINE-TEXT
            PERFORM PRINT-LINE
 
            *> Assume none until we find one
@@ -27,6 +27,8 @@
                    MOVE "1. Accept" TO LINE-TEXT
                    PERFORM PRINT-LINE
                    MOVE "2. Reject" TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   MOVE "---------------------------------------" TO LINE-TEXT
                    PERFORM PRINT-LINE
 
                    MOVE SPACES TO LINE-TEXT
@@ -61,6 +63,9 @@
                        END-IF
                    END-PERFORM
 
+                   MOVE " " TO LINE-TEXT
+                   PERFORM PRINT-LINE
+                   
                    *> Save the sender username for accept/reject messages
                    MOVE REQ-SENDER(J) TO CONNECTED-USERNAME
 
@@ -74,7 +79,7 @@
                        MOVE SPACES TO LINE-TEXT
                        STRING "Connection request from "
                               FUNCTION TRIM(CONNECTED-USERNAME)
-                              " ACCEPTED"
+                              " | ACCEPTED |"
                               DELIMITED BY SIZE
                               INTO LINE-TEXT
                        END-STRING
@@ -87,7 +92,7 @@
                        MOVE SPACES TO LINE-TEXT
                        STRING "Connection request from "
                               FUNCTION TRIM(CONNECTED-USERNAME)
-                              " REJECTED"
+                              " | REJECTED |"
                               DELIMITED BY SIZE
                               INTO LINE-TEXT
                        END-STRING
@@ -161,8 +166,8 @@
            SUBTRACT 1 FROM REQUEST-COUNT.
 
 
-       VIEW-MY-NETWORK.
-           MOVE "---- Your Network ----" TO LINE-TEXT
+              VIEW-MY-NETWORK.
+           MOVE "-------------------| Your Network |-------------------" TO LINE-TEXT
            PERFORM PRINT-LINE
 
            *> Assume none until we print one
@@ -215,6 +220,10 @@
                                   INTO LINE-TEXT
                            END-STRING
                            PERFORM PRINT-LINE
+
+                           MOVE " " TO LINE-TEXT
+                           PERFORM PRINT-LINE
+
                        ELSE
                            *> No profile, just print username
                            MOVE SPACES TO LINE-TEXT
@@ -228,6 +237,8 @@
                    ELSE
                        *> Lookup failed, still show username
                        MOVE SPACES TO LINE-TEXT
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
                        STRING "Connected with: "
                               FUNCTION TRIM(CONNECTED-USERNAME)
                               DELIMITED BY SIZE
@@ -240,6 +251,7 @@
 
            END-PERFORM
 
+           *> If we never found anything
            IF NO-CONNECTIONS
                MOVE "You have no connections." TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -248,6 +260,9 @@
            *> Simple pause before returning
            MOVE "1. Return to Main Menu" TO LINE-TEXT
            PERFORM PRINT-LINE
+           MOVE "-----------------------" TO LINE-TEXT
+           PERFORM PRINT-LINE
+
            MOVE "Enter your choice: " TO LINE-TEXT
            PERFORM PRINT-LINE
            PERFORM READ-NEXT-INPUT
