@@ -1,0 +1,16 @@
+2
+W6Persist
+Password1!
+1
+W6Persist
+Password1!
+3
+1
+Persistence Check Intern
+Used to confirm jobs survive a restart.
+InCollege Persistence
+Remote
+NONE
+3
+9
+9

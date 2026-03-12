@@ -1,0 +1,109 @@
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+2
+
+---------------------------
+Please enter your username:
+W6User07
+
+Please enter your password:
+Password1!
+---------------------------
+***********************************
+*  Account created successfully!  *
+***********************************
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+1
+
+---------------------------
+Please enter your username:
+W6User07
+
+Please enter your password:
+Password1!
+*************************************
+*  You have successfully logged in  *
+*************************************
+
+Welcome, W6User07!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+9. Logout
+---------------------------------------
+Enter your choice:
+3
+
+------- Job Search / Internship -------
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+---------------------------------------
+Enter your choice:
+1
+
+------- Post a Job/Internship -------
+Enter Job Title (required):
+Backend Intern
+Enter Description (required):
+Maintain and test COBOL data flows.
+Enter Employer (required):
+
+Employer is required.
+Enter Employer (required):
+InCollege Engineering
+Enter Location (required):
+Remote
+Enter Salary (optional; enter NONE to skip):
+NONE
+Job/Internship posted successfully. ID: 0001
+
+------- Job Search / Internship -------
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. Back to Main Menu
+---------------------------------------
+Enter your choice:
+3
+
+Welcome, W6User07!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+9. Logout
+---------------------------------------
+Enter your choice:
+9
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+9
+
+--- END_OF_PROGRAM_EXECUTION ---
