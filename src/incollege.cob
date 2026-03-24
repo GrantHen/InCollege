@@ -21,6 +21,7 @@
                FILE STATUS IS REQ-FILE-STATUS.
 
            COPY "JOBS_SRC/JobsFileControl.cob".
+           COPY "APPLYJOB_SRC/ApplicationsFileControl.cob".
 
            *> all program input is read from a file
            SELECT INPUT-FILE ASSIGN TO "test/InCollege-Input.txt"
@@ -45,6 +46,7 @@
        01  REQUESTS-REC               PIC X(80).
 
        COPY "JOBS_SRC/JobsFileSection.cob".
+       COPY "APPLYJOB_SRC/ApplicationsFileSection.cob".
 
        FD  INPUT-FILE. *> Define the input file (all menu/user input comes from here)
        01  INPUT-REC                  PIC X(200).
@@ -245,6 +247,7 @@
            88  NO-CONNECTIONS          VALUE "N".
 
        COPY "JOBS_SRC/JobsStorage.cob".
+       COPY "APPLYJOB_SRC/ApplicationsStorage.cob".
 
        PROCEDURE DIVISION.
        MAIN.
@@ -275,4 +278,5 @@
 
        COPY "JOBS_SRC/Jobs.cob".
        COPY "BROWSEJOBS_SRC/BrowseJobs.cob".
+       COPY "APPLYJOB_SRC/ApplyJob.cob".
        COPY "VIEWNET_SRC/ViewNetwork.cob".

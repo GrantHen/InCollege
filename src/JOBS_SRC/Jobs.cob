@@ -155,10 +155,10 @@
 
                MOVE FUNCTION TRIM(INPUT-REC) TO JOB-DESCRIPTION-IN
 
-           IF FUNCTION LENGTH(JOB-DESCRIPTION-IN) > 200
-               MOVE "Description cannot exceed 200 characters." TO LINE-TEXT
-               PERFORM PRINT-LINE
-               MOVE SPACES TO JOB-DESCRIPTION-IN
+               IF FUNCTION LENGTH(FUNCTION TRIM(JOB-DESCRIPTION-IN)) = 0
+                   MOVE "Description is required." TO LINE-TEXT
+                   PERFORM PRINT-LINE
+               END-IF
            END-PERFORM.
 
        GET-JOB-EMPLOYER.
@@ -247,6 +247,10 @@
            SET EOF-NO TO TRUE.
 
        PARSE-JOB-LINE.
+           IF FUNCTION LENGTH(FUNCTION TRIM(JOBS-REC)) = 0
+               EXIT PARAGRAPH
+           END-IF
+
            IF JOB-COUNT < MAX-JOBS
                ADD 1 TO JOB-COUNT
                MOVE SPACES TO JOB-ID-TEXT
