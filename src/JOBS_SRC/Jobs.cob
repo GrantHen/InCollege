@@ -5,14 +5,16 @@
        *> TODO any richer validation/polish.
        JOB-SEARCH-INTERNSHIP-MENU.
            MOVE 0 TO JOB-MENU-CHOICE
-           PERFORM UNTIL JOB-MENU-CHOICE = 3
-               MOVE "------- Job Search / Internship -------" TO LINE-TEXT
+           PERFORM UNTIL JOB-MENU-CHOICE = 4
+               MOVE "------- Job Search / Internship Menu -------" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "1. Post a Job/Internship" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "2. Browse Jobs/Internships" TO LINE-TEXT
                PERFORM PRINT-LINE
-               MOVE "3. Back to Main Menu" TO LINE-TEXT
+               MOVE "3. View My Applications" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "4. Back to Main Menu" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "---------------------------------------" TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -35,6 +37,11 @@
                    WHEN 3
                        MOVE " " TO LINE-TEXT
                        PERFORM PRINT-LINE
+                       
+                       PERFORM VIEW-MY-APPLICATIONS
+                   WHEN 4
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
 
                        CONTINUE
                    WHEN OTHER
@@ -48,7 +55,7 @@
        GET-JOB-MENU-CHOICE.
            PERFORM READ-NEXT-INPUT
            IF INPUT-EOF-YES
-               MOVE 3 TO JOB-MENU-CHOICE
+               MOVE 4 TO JOB-MENU-CHOICE
            ELSE
                IF INPUT-REC(1:1) >= "0" AND INPUT-REC(1:1) <= "9"
                    COMPUTE JOB-MENU-CHOICE = FUNCTION NUMVAL(INPUT-REC(1:1))
@@ -155,10 +162,10 @@
 
                MOVE FUNCTION TRIM(INPUT-REC) TO JOB-DESCRIPTION-IN
 
-           IF FUNCTION LENGTH(JOB-DESCRIPTION-IN) > 200
-               MOVE "Description cannot exceed 200 characters." TO LINE-TEXT
-               PERFORM PRINT-LINE
-               MOVE SPACES TO JOB-DESCRIPTION-IN
+               IF FUNCTION LENGTH(FUNCTION TRIM(JOB-DESCRIPTION-IN)) = 0
+                   MOVE "Description is required." TO LINE-TEXT
+                   PERFORM PRINT-LINE
+               END-IF
            END-PERFORM.
 
        GET-JOB-EMPLOYER.
@@ -247,6 +254,10 @@
            SET EOF-NO TO TRUE.
 
        PARSE-JOB-LINE.
+           IF FUNCTION LENGTH(FUNCTION TRIM(JOBS-REC)) = 0
+               EXIT PARAGRAPH
+           END-IF
+
            IF JOB-COUNT < MAX-JOBS
                ADD 1 TO JOB-COUNT
                MOVE SPACES TO JOB-ID-TEXT

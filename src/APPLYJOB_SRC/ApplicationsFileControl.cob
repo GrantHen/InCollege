@@ -1,0 +1,3 @@
+           SELECT APPLICATIONS-FILE ASSIGN TO "data/applications.dat"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS APPLICATIONS-FILE-STATUS.
