@@ -280,3 +280,4 @@
        COPY "BROWSEJOBS_SRC/BrowseJobs.cob".
        COPY "APPLYJOB_SRC/ApplyJob.cob".
        COPY "VIEWNET_SRC/ViewNetwork.cob".
+       COPY "VIEWAPPLICATIONS_SRC/ViewApplications.cob".

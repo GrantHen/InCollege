@@ -41,19 +41,23 @@
                STRING J
                       ". "
                       FUNCTION TRIM(JOB-TITLE(J))
-                      " | "
+                      " at "
                       FUNCTION TRIM(JOB-EMPLOYER(J))
-                      " | "
+                      " ( "
                       FUNCTION TRIM(JOB-LOCATION(J))
+                      ")"
                       DELIMITED BY SIZE
                       INTO LINE-TEXT
                END-STRING
                PERFORM PRINT-LINE
            END-PERFORM
-
+           
+           MOVE "---------------------------------" TO LINE-TEXT
+           PERFORM PRINT-LINE
            MOVE "0. Return to Job Menu" TO LINE-TEXT
            PERFORM PRINT-LINE
-           MOVE "Enter a job number to view details: " TO LINE-TEXT
+           MOVE "Enter a job number to view details, or 0 to go back: " 
+               TO LINE-TEXT
            PERFORM PRINT-LINE.
 
        GET-BROWSE-JOB-CHOICE.

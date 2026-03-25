@@ -5,14 +5,16 @@
        *> TODO any richer validation/polish.
        JOB-SEARCH-INTERNSHIP-MENU.
            MOVE 0 TO JOB-MENU-CHOICE
-           PERFORM UNTIL JOB-MENU-CHOICE = 3
-               MOVE "------- Job Search / Internship -------" TO LINE-TEXT
+           PERFORM UNTIL JOB-MENU-CHOICE = 4
+               MOVE "------- Job Search / Internship Menu -------" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "1. Post a Job/Internship" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "2. Browse Jobs/Internships" TO LINE-TEXT
                PERFORM PRINT-LINE
-               MOVE "3. Back to Main Menu" TO LINE-TEXT
+               MOVE "3. View My Applications" TO LINE-TEXT
+               PERFORM PRINT-LINE
+               MOVE "4. Back to Main Menu" TO LINE-TEXT
                PERFORM PRINT-LINE
                MOVE "---------------------------------------" TO LINE-TEXT
                PERFORM PRINT-LINE
@@ -35,6 +37,11 @@
                    WHEN 3
                        MOVE " " TO LINE-TEXT
                        PERFORM PRINT-LINE
+                       
+                       PERFORM VIEW-MY-APPLICATIONS
+                   WHEN 4
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
 
                        CONTINUE
                    WHEN OTHER
@@ -48,7 +55,7 @@
        GET-JOB-MENU-CHOICE.
            PERFORM READ-NEXT-INPUT
            IF INPUT-EOF-YES
-               MOVE 3 TO JOB-MENU-CHOICE
+               MOVE 4 TO JOB-MENU-CHOICE
            ELSE
                IF INPUT-REC(1:1) >= "0" AND INPUT-REC(1:1) <= "9"
                    COMPUTE JOB-MENU-CHOICE = FUNCTION NUMVAL(INPUT-REC(1:1))
