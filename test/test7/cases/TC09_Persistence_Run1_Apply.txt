@@ -1,0 +1,19 @@
+2
+W7Persist
+Password1!
+1
+W7Persist
+Password1!
+3
+1
+Persistence Intern
+Used to verify saved applications.
+InCollege Persistence
+Remote
+NONE
+2
+1
+1
+4
+9
+9
