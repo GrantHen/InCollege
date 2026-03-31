@@ -22,6 +22,8 @@
 
            COPY "JOBS_SRC/JobsFileControl.cob".
            COPY "APPLYJOB_SRC/ApplicationsFileControl.cob".
+           COPY "MESSAGING_SRC/MessagingFileControl.cob".
+
 
            *> all program input is read from a file
            SELECT INPUT-FILE ASSIGN TO "test/InCollege-Input.txt"
@@ -47,7 +49,7 @@
 
        COPY "JOBS_SRC/JobsFileSection.cob".
        COPY "APPLYJOB_SRC/ApplicationsFileSection.cob".
-
+       COPY "MESSAGING_SRC/MessagingFileSection.cob".
        FD  INPUT-FILE. *> Define the input file (all menu/user input comes from here)
        01  INPUT-REC                  PIC X(200).
 
@@ -248,6 +250,8 @@
 
        COPY "JOBS_SRC/JobsStorage.cob".
        COPY "APPLYJOB_SRC/ApplicationsStorage.cob".
+       COPY "MESSAGING_SRC/MessagingStorage.cob".
+
 
        PROCEDURE DIVISION.
        MAIN.
@@ -260,6 +264,7 @@
            PERFORM LOAD-CONNECTIONS
            PERFORM LOAD-REQUESTS
            PERFORM LOAD-JOBS
+           PERFORM INIT-MESSAGES-FILE
            PERFORM START-SCREEN
 
            *> Close files when program ends
@@ -275,6 +280,9 @@
        COPY "CONNECTIONS_SRC/Connections.cob".
        COPY "SEARCH_SRC/SearchUsers.cob".
        COPY "SKILLS_SRC/Skills.cob".
+
+       COPY "MESSAGING_SRC/SendMessage.cob".
+       COPY "MESSAGING_SRC/ViewMessages.cob".
 
        COPY "JOBS_SRC/Jobs.cob".
        COPY "BROWSEJOBS_SRC/BrowseJobs.cob".

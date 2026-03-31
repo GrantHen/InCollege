@@ -134,6 +134,9 @@
                PERFORM PRINT-LINE
                MOVE "7. View My Network" TO LINE-TEXT
                PERFORM PRINT-LINE
+               MOVE "8. Messages" TO LINE-TEXT
+               PERFORM PRINT-LINE
+
 
                *> logout terminates
                MOVE "9. Logout" TO LINE-TEXT
@@ -180,8 +183,13 @@
                    WHEN 7
                        MOVE " " TO LINE-TEXT
                        PERFORM PRINT-LINE
-                       
+
                        PERFORM VIEW-MY-NETWORK
+                   WHEN 8
+                       MOVE " " TO LINE-TEXT
+                       PERFORM PRINT-LINE
+
+                       PERFORM MESSAGES-MENU
                    WHEN 9
                        SET NOT-LOGGED-IN TO TRUE
 
