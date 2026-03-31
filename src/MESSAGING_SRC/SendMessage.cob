@@ -63,6 +63,24 @@
            PERFORM READ-NEXT-INPUT
            MOVE FUNCTION TRIM(INPUT-REC) TO MSG-RECIPIENT-INPUT
 
+           *> Validate recipient exists in the system
+           SET RECIPIENT-NOT-EXISTS TO TRUE
+           PERFORM VARYING I FROM 1 BY 1
+                   UNTIL I > ACCOUNT-COUNT
+               IF FUNCTION UPPER-CASE(FUNCTION TRIM(
+                       STORED-USERNAME(I)))
+                 = FUNCTION UPPER-CASE(FUNCTION TRIM(
+                       MSG-RECIPIENT-INPUT))
+                   SET RECIPIENT-EXISTS TO TRUE
+               END-IF
+           END-PERFORM
+
+           IF RECIPIENT-NOT-EXISTS
+               MOVE "User not found in the system." TO LINE-TEXT
+               PERFORM PRINT-LINE
+               EXIT PARAGRAPH
+           END-IF
+
            *> Validate recipient is an established connection
            SET RECIPIENT-NOT-VALID TO TRUE
            PERFORM VARYING J FROM 1 BY 1
@@ -98,7 +116,24 @@
            MOVE "Enter your message (max 200 chars): " TO LINE-TEXT
            PERFORM PRINT-LINE
            PERFORM READ-NEXT-INPUT
-           MOVE FUNCTION TRIM(INPUT-REC) TO MSG-CONTENT-INPUT
+           MOVE FUNCTION TRIM(INPUT-REC) TO MSG-CONTENT-RAW
+           COMPUTE MSG-CONTENT-LEN =
+               FUNCTION LENGTH(FUNCTION TRIM(MSG-CONTENT-RAW))
+
+           IF FUNCTION TRIM(MSG-CONTENT-RAW) = SPACES
+               MOVE "Message content cannot be empty." TO LINE-TEXT
+               PERFORM PRINT-LINE
+               EXIT PARAGRAPH
+           END-IF
+
+           IF MSG-CONTENT-LEN > 200
+               MOVE "Message content cannot exceed 200 characters."
+                   TO LINE-TEXT
+               PERFORM PRINT-LINE
+               EXIT PARAGRAPH
+           END-IF
+
+           MOVE FUNCTION TRIM(MSG-CONTENT-RAW) TO MSG-CONTENT-INPUT
 
            *> Generate timestamp YYYY-MM-DD HH:MM:SS
            MOVE FUNCTION CURRENT-DATE TO WS-CURRENT-DATE-TIME

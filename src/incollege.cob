@@ -51,10 +51,10 @@
        COPY "APPLYJOB_SRC/ApplicationsFileSection.cob".
        COPY "MESSAGING_SRC/MessagingFileSection.cob".
        FD  INPUT-FILE. *> Define the input file (all menu/user input comes from here)
-       01  INPUT-REC                  PIC X(200).
+       01  INPUT-REC                  PIC X(500).
 
        FD  OUTPUT-FILE. *> Define the output file (everything displayed is also written here)
-       01  OUTPUT-REC                 PIC X(200).
+       01  OUTPUT-REC                 PIC X(500).
 
        WORKING-STORAGE SECTION.
        *> File status for accounts file
@@ -130,7 +130,7 @@
            88  LOGIN-NO               VALUE "N".
 
        01  TEMP-NUM                   PIC 9 VALUE 0. *> used for converting menu input
-       01  LINE-TEXT                  PIC X(200). *> holds what we print/write
+       01  LINE-TEXT                  PIC X(500). *> holds what we print/write
 
        01  PROFILE-FILE-STATUS        PIC XX VALUE "00".
        01  PROFILE-POINTER            PIC 9(4) VALUE 1.
@@ -139,7 +139,7 @@
 
        01  TEXT-LEN                   PIC 99 VALUE 0.
        01  TEMP-CHAR                  PIC X.
-       01  TRIMMED-INPUT              PIC X(200).
+       01  TRIMMED-INPUT              PIC X(500).
 
        01  GRAD-YEAR-NUM              PIC 9(4) VALUE 0.
        01  GRAD-YEAR-OK               PIC X VALUE "N".
