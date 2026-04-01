@@ -10,3 +10,4 @@
        01  APP-JOB-ID-NUM             PIC 9(4).
        01  APP-COUNT                  PIC 99 VALUE 0.
        01  APP-MATCH-IDX              PIC 99 VALUE 0.
+      
