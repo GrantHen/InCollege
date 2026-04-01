@@ -9,7 +9,7 @@ Enter your choice:
 
 ---------------------------
 Please enter your username:
-W6User06
+W7User06
 
 Please enter your password:
 Password1!
@@ -29,7 +29,7 @@ Enter your choice:
 
 ---------------------------
 Please enter your username:
-W6User06
+W7User06
 
 Please enter your password:
 Password1!
@@ -37,7 +37,7 @@ Password1!
 *  You have successfully logged in  *
 *************************************
 
-Welcome, W6User06!
+Welcome, W7User06!
 ---------------------------------------
 1. Create/Edit My Profile
 2. View My Profile
@@ -51,38 +51,30 @@ Welcome, W6User06!
 Enter your choice:
 3
 
-------- Job Search / Internship -------
+------- Job Search / Internship Menu -------
 1. Post a Job/Internship
 2. Browse Jobs/Internships
-3. Back to Main Menu
----------------------------------------
-Enter your choice:
-1
-
-------- Post a Job/Internship -------
-Enter Job Title (required):
-QA Analyst
-Enter Description (required):
-
-Enter Description (required):
-Validate application features and document defects.
-Enter Employer (required):
-InCollege QA
-Enter Location (required):
-Remote
-Enter Salary (optional; enter NONE to skip):
-NONE
-Job/Internship posted successfully. ID: 0001
-
-------- Job Search / Internship -------
-1. Post a Job/Internship
-2. Browse Jobs/Internships
-3. Back to Main Menu
+3. View My Applications
+4. Back to Main Menu
 ---------------------------------------
 Enter your choice:
 3
 
-Welcome, W6User06!
+--- Your Job Applications ---
+Application Summary for W7User06
+------------------------------
+You have not applied to any jobs yet.
+
+------- Job Search / Internship Menu -------
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+---------------------------------------
+Enter your choice:
+4
+
+Welcome, W7User06!
 ---------------------------------------
 1. Create/Edit My Profile
 2. View My Profile

@@ -9,7 +9,7 @@ Enter your choice:
 
 ---------------------------
 Please enter your username:
-W6User04
+W7User01
 
 Please enter your password:
 Password1!
@@ -29,7 +29,7 @@ Enter your choice:
 
 ---------------------------
 Please enter your username:
-W6User04
+W7User01
 
 Please enter your password:
 Password1!
@@ -37,7 +37,7 @@ Password1!
 *  You have successfully logged in  *
 *************************************
 
-Welcome, W6User04!
+Welcome, W7User01!
 ---------------------------------------
 1. Create/Edit My Profile
 2. View My Profile
@@ -51,15 +51,27 @@ Welcome, W6User04!
 Enter your choice:
 3
 
-------- Job Search / Internship -------
+------- Job Search / Internship Menu -------
 1. Post a Job/Internship
 2. Browse Jobs/Internships
-3. Back to Main Menu
+3. View My Applications
+4. Back to Main Menu
 ---------------------------------------
 Enter your choice:
-3
+2
 
-Welcome, W6User04!
+No jobs/internships are currently available.
+
+------- Job Search / Internship Menu -------
+1. Post a Job/Internship
+2. Browse Jobs/Internships
+3. View My Applications
+4. Back to Main Menu
+---------------------------------------
+Enter your choice:
+4
+
+Welcome, W7User01!
 ---------------------------------------
 1. Create/Edit My Profile
 2. View My Profile
