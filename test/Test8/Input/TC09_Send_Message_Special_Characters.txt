@@ -51,10 +51,7 @@ Password1!
 8
 1
 user2
-First persistence message
-1
-user2
-Second persistence message
+Hello! @#$%^&*() testing special characters
 3
 9
 9

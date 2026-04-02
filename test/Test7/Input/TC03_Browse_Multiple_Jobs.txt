@@ -1,0 +1,30 @@
+2
+W7User03
+Password1!
+1
+W7User03
+Password1!
+3
+1
+Software Intern
+Assist with testing workflows.
+TechCorp
+New York, NY
+NONE
+1
+Data Analyst
+Analyze reporting data.
+DataSolutions
+Remote
+$25/hour
+1
+Marketing Specialist
+Coordinate campaign support.
+BrandInc
+Chicago, IL
+NONE
+2
+0
+4
+9
+9

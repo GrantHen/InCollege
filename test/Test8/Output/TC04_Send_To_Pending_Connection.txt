@@ -1,0 +1,336 @@
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+2
+
+---------------------------
+Please enter your username:
+user1
+
+Please enter your password:
+Password1!
+---------------------------
+***********************************
+*  Account created successfully!  *
+***********************************
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+2
+
+---------------------------
+Please enter your username:
+user2
+
+Please enter your password:
+Password1!
+---------------------------
+***********************************
+*  Account created successfully!  *
+***********************************
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+1
+
+---------------------------
+Please enter your username:
+user1
+
+Please enter your password:
+Password1!
+*************************************
+*  You have successfully logged in  *
+*************************************
+
+Welcome, user1!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+1
+
+----------- Create/Edit Profile -----------
+Enter First Name:
+firstName1
+Enter Last Name:
+lastName1
+Enter University/College Attended:
+school1
+Enter Major:
+major1
+Enter Graduation Year (YYYY):
+2025
+Enter About Me (optional, max 200 chars, enter blank line to skip):
+about1
+Experience #1 - Title (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+Education #1 - Degree (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+***********************************
+*   Profile saved successfully!   *
+***********************************
+----------------------
+1. Return to Main Menu
+2. Edit Profile Again
+----------------------
+Enter your choice:
+1
+
+Welcome, user1!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+9
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+1
+
+---------------------------
+Please enter your username:
+user2
+
+Please enter your password:
+Password1!
+*************************************
+*  You have successfully logged in  *
+*************************************
+
+Welcome, user2!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+1
+
+----------- Create/Edit Profile -----------
+Enter First Name:
+firstName2
+Enter Last Name:
+lastName2
+Enter University/College Attended:
+school2
+Enter Major:
+major2
+Enter Graduation Year (YYYY):
+2026
+Enter About Me (optional, max 200 chars, enter blank line to skip):
+about2
+Experience #1 - Title (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+Education #1 - Degree (blank keeps current, 'CLEAR' removes entry, 'DONE' to finish):
+DONE
+***********************************
+*   Profile saved successfully!   *
+***********************************
+----------------------
+1. Return to Main Menu
+2. Edit Profile Again
+----------------------
+Enter your choice:
+1
+
+Welcome, user2!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+9
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+1
+
+---------------------------
+Please enter your username:
+user1
+
+Please enter your password:
+Password1!
+*************************************
+*  You have successfully logged in  *
+*************************************
+
+Welcome, user1!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+4
+
+-------------------------------------------------------
+Enter the full name of the person you are looking for:
+firstName2 lastName2
+
+----| User Profile |----
+Name: firstName2 lastName2
+University: school2
+Major: major2
+Graduation Year: 2026
+About Me: about2
+Experience: None
+Education: None
+-------------------------------------------------------
+1. Send Connection Request
+2. Return to Main Menu
+--------------------------
+Enter your choice:
+1
+
+* Connection request sent to: user2
+
+Welcome, user1!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+9
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+1
+
+---------------------------
+Please enter your username:
+user1
+
+Please enter your password:
+Password1!
+*************************************
+*  You have successfully logged in  *
+*************************************
+
+Welcome, user1!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+8
+
+--- Messages Menu ---
+1. Send a New Message
+2. View My Messages
+3. Back to Main Menu
+Enter your choice:
+1
+Enter recipient's username (must be a connection):
+user2
+You can only message users you are connected with.
+--- Messages Menu ---
+1. Send a New Message
+2. View My Messages
+3. Back to Main Menu
+Enter your choice:
+3
+Welcome, user1!
+---------------------------------------
+1. Create/Edit My Profile
+2. View My Profile
+3. Job Search / Internship
+4. Find someone you know
+5. Learn a New Skill
+6. View My Pending Connection Requests
+7. View My Network
+8. Messages
+9. Logout
+---------------------------------------
+Enter your choice:
+9
+
+Welcome to InCollege!
+----------------------
+1. Log In
+2. Create New Account
+9. Exit
+----------------------
+Enter your choice:
+9
+
+--- END_OF_PROGRAM_EXECUTION ---

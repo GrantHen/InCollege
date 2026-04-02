@@ -51,10 +51,7 @@ Password1!
 8
 1
 user2
-First persistence message
-1
-user2
-Second persistence message
+This message is intentionally made very long to exceed the allowed maximum character limit and test how the system handles oversized input beyond expected limits and should be rejected by the system properly
 3
 9
 9

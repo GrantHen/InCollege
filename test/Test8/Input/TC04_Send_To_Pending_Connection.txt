@@ -40,21 +40,11 @@ firstName2 lastName2
 1
 9
 1
-user2
-Password1!
-6
-1
-9
-1
 user1
 Password1!
 8
 1
 user2
-First persistence message
-1
-user2
-Second persistence message
 3
 9
 9

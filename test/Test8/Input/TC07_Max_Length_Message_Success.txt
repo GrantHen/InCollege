@@ -51,10 +51,7 @@ Password1!
 8
 1
 user2
-First persistence message
-1
-user2
-Second persistence message
+This message is intentionally written to contain the exact maximum allowed character limit so we can verify that this system correctly accepts very long messages without errors or any truncation issue
 3
 9
 9

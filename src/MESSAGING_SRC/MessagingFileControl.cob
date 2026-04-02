@@ -1,0 +1,3 @@
+           SELECT MESSAGES-FILE ASSIGN TO "data/messages.dat"
+               ORGANIZATION IS LINE SEQUENTIAL
+               FILE STATUS IS MSG-FILE-STATUS.
