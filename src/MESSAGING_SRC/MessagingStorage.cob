@@ -3,10 +3,20 @@
       *> ============================================================
        01  MSG-FILE-STATUS            PIC XX VALUE "00".
        01  MSG-MENU-CHOICE            PIC 9 VALUE 0.
+       01  MSG-VIEW-EOF-FLAG         PIC X VALUE "N".
+           88  MSG-VIEW-EOF-YES      VALUE "Y".
+           88  MSG-VIEW-EOF-NO       VALUE "N".
+       01  MSG-FOUND-ANY-FLAG        PIC X VALUE "N".
+           88  MSG-FOUND-ANY         VALUE "Y".
+           88  MSG-FOUND-NONE        VALUE "N".
 
        01  MSG-RECIPIENT-INPUT        PIC X(20).
        01  MSG-CONTENT-RAW            PIC X(500).
        01  MSG-CONTENT-INPUT          PIC X(200).
+       01  MSG-VIEW-SENDER           PIC X(20).
+       01  MSG-VIEW-RECIPIENT        PIC X(20).
+       01  MSG-VIEW-TIMESTAMP        PIC X(20).
+       01  MSG-VIEW-CONTENT          PIC X(200).
 
        01  MSG-RECIPIENT-VALID        PIC X VALUE "N".
            88  RECIPIENT-VALID        VALUE "Y".
