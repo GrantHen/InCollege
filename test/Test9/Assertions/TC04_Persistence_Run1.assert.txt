@@ -1,0 +1,5 @@
+REQUIRE: Welcome, bob!
+REQUIRE: --- Your Messages ---
+REQUIRE: From: alice
+REQUIRE: Message: Persistent inbox message.
+REQUIRE: Sent: 2026-03-15 11:45:00

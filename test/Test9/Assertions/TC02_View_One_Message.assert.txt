@@ -1,0 +1,7 @@
+REQUIRE: Welcome, bob!
+REQUIRE: --- Your Messages ---
+REQUIRE: From: alice
+REQUIRE: Message: Hi Bob, welcome to InCollege.
+REQUIRE: Sent: 2026-04-01 09:15:00
+REQUIRE: Press any key to return to Messages Menu...
+ABSENT: Message: This belongs to Alice only.

@@ -1,0 +1,5 @@
+REQUIRE: Welcome, bob!
+REQUIRE: --- Messages Menu ---
+REQUIRE: --- Your Messages ---
+REQUIRE: You have no messages at this time.
+REQUIRE: Press any key to return to Messages Menu...

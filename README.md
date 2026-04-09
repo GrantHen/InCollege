@@ -41,6 +41,20 @@ This script compares 'actual output' and 'expected output'
 
 This script prints PASS or FAIL for each test
 
+----------- Automated Testing (Test 9) ----------------------------------------------------------------------------------------------------------------
+
+To run the Epic 9 automated test cases for "View My Messages" (from project's root):
+***./scripts/run_test9.sh***
+
+This script seeds the required `.dat` files per case
+
+This script verifies the message-viewing flow and persistence scenarios for Week 9
+
+This script compares console output with `out/InCollege-Output.txt` for every case
+
+Test requirements, seed data, and input files are stored under:
+**test/Test9/**
+
 ----------- Important Notes ---------------------------------------------------------------------------------------------------------------------------
 
 Program output is written to:

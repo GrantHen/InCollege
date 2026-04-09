@@ -1,0 +1,10 @@
+REQUIRE: Welcome, bob!
+REQUIRE: --- Your Messages ---
+REQUIRE: From: carol
+REQUIRE: Message: Latest update from Carol.
+REQUIRE: Sent: 2026-04-02 08:00:00
+REQUIRE: From: alice
+REQUIRE: Message: Earlier note from Alice.
+REQUIRE: Sent: 2026-04-01 09:15:00
+ABSENT: Message: This belongs to Alice only.
+ORDER: Message: Latest update from Carol. => Message: Earlier note from Alice.
